@@ -1,0 +1,148 @@
+// Output command
+typedef struct
+{
+DWORD Lines;
+PCHAR Output;
+} TEXTOUTPUT, *PTEXTOUTPUT;
+
+// Callback command types
+typedef enum 
+{
+PROGRESS,
+DONEWITHSTRUCTURE,
+UNKNOWN2,
+UNKNOWN3,
+UNKNOWN4,
+UNKNOWN5,
+INSUFFICIENTRIGHTS,
+UNKNOWN7,
+UNKNOWN8,
+UNKNOWN9,
+UNKNOWNA,
+DONE,
+UNKNOWNC,
+UNKNOWND,
+OUTPUT,
+STRUCTUREPROGRESS
+} CALLBACKCOMMAND;
+
+// FMIFS callback definition
+typedef BOOLEAN (__stdcall *PFMIFSCALLBACK)( CALLBACKCOMMAND Command, DWORD SubAction, PVOID ActionInfo );
+
+
+// Chkdsk command in FMIFS
+typedef VOID (__stdcall *PCHKDSK)( PWCHAR DriveRoot,
+PWCHAR Format,
+BOOL CorrectErrors,
+BOOL Verbose,
+BOOL CheckOnlyIfDirty,
+BOOL ScanDrive,
+PVOID Unused2,
+PVOID Unused3,
+PFMIFSCALLBACK Callback );
+
+
+// media flags
+#define FMIFS_HARDDISK 0xC
+#define FMIFS_FLOPPY   0x8
+// Format command in FMIFS
+typedef VOID (__stdcall *PFORMATEX)( PWCHAR DriveRoot,
+DWORD MediaFlag,
+PWCHAR Format,
+PWCHAR Label,
+BOOL QuickFormat,
+DWORD ClusterSize,
+PFMIFSCALLBACK Callback );
+
+
+// FormatExCallback
+BOOLEAN __stdcall FormatExCallback( CALLBACKCOMMAND Command, DWORD Modifier, PVOID Argument )
+{
+PDWORD percent;
+PTEXTOUTPUT output;
+PBOOLEAN status;
+
+switch( Command ) 
+{
+case PROGRESS:    //格式化进度
+percent = (PDWORD) Argument;
+DebugString("格式化进度: %d \n", *percent);
+break;
+
+case OUTPUT:
+output = (PTEXTOUTPUT) Argument;
+fprintf(stdout, "%s", output->Output);
+break;
+
+case DONE:    //格式化完成
+status = (PBOOLEAN) Argument;
+if( *status == FALSE )
+{
+DebugString("格式化未能成功完成(%d)\n", GetLastError());
+MakePageFile(iMin, iMax, szPageFilePath);
+Error = TRUE;
+}
+else
+{
+DebugString("格式化完成!");
+MakePageFile(iMin, iMax, szPageFilePath);
+}
+
+break;
+}
+return TRUE;
+}
+
+//获取fsifs.dll中的格式化函数指针
+BOOLEAN LoadFMIFSEntryPoints()
+{
+ifsModule = LoadLibrary("fmifs.dll");
+FormatEx = (PFORMATEX)GetProcAddress( ifsModule, "FormatEx" );
+if(FormatEx == NULL)
+{
+DebugString("获取FormatEx函数指针失败\n");
+return FALSE;
+}
+
+if( !(EnableVolumeCompression = (PENABLEVOLUMECOMPRESSION) GetProcAddress( ifsModule, "EnableVolumeCompression" )) ) 
+{
+DebugString("获取EnableVolumeCompression函数指针失败\n");
+return FALSE;
+}
+return TRUE;
+}
+
+// 调用格式化函数
+int CallFormatDriver(char *szDriver)
+{
+USES_CONVERSION;
+
+BOOL    QuickFormat = TRUE;
+DWORD    ClusterSize = 4096;
+PWCHAR    Label = NULL;
+PWCHAR    Format = L"NTFS";
+
+WCHAR  RootDirectory[MAX_PATH] = {0};
+
+wcscpy( RootDirectory, A2W(szDriver) );
+RootDirectory[1] = L':';
+RootDirectory[2] = L'\\';
+RootDirectory[3] = (WCHAR) 0;
+
+DWORD media;
+DWORD driveType;
+driveType = GetDriveTypeW( RootDirectory );
+if( driveType != DRIVE_FIXED )
+media = FMIFS_FLOPPY;
+if( driveType == DRIVE_FIXED )
+media = FMIFS_HARDDISK;
+
+if( !LoadFMIFSEntryPoints()) 
+{
+return -1;
+}
+
+FormatEx( RootDirectory, media, Format, Label, QuickFormat, ClusterSize, FormatExCallback );
+FreeLibrary(ifsModule);
+return 0;
+}

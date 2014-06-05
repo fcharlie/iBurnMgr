@@ -1,0 +1,133 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="Precompiled.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="MetroWindow.cpp">
+      <Filter>Sources\View</Filter>
+    </ClCompile>
+    <ClCompile Include="iBurnMgrStart.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="iBurnMgrAbout.cpp">
+      <Filter>Sources\View</Filter>
+    </ClCompile>
+    <ClCompile Include="InspectionEnvironment.cpp">
+      <Filter>Sources\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="FindImageFileManager.cpp">
+      <Filter>Sources\Controller</Filter>
+    </ClCompile>
+    <ClCompile Include="DrivesTraversal.cpp">
+      <Filter>Sources\Controller</Filter>
+    </ClCompile>
+    <ClCompile Include="DecompressSuprevision.cpp">
+      <Filter>Sources\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="ResolveBootSupervisor.cpp">
+      <Filter>Sources\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="StorageManagementAPI.cpp">
+      <Filter>Sources\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="UniversalDiskFormatDecode.cpp">
+      <Filter>Sources\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="MUIController.cpp">
+      <Filter>Sources\Controller</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Precompiled.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="ExplorerCombo.h">
+      <Filter>Header\View</Filter>
+    </ClInclude>
+    <ClInclude Include="MetroWindow.h">
+      <Filter>Header\View</Filter>
+    </ClInclude>
+    <ClInclude Include="ToString.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="DecompressSupervision.h">
+      <Filter>Header\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="ResolveBootSupervisor.h">
+      <Filter>Header\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="APIController.h">
+      <Filter>Header\Controller</Filter>
+    </ClInclude>
+    <ClInclude Include="EquipmentController.h">
+      <Filter>Header\Controller</Filter>
+    </ClInclude>
+    <ClInclude Include="EventHandlingModels.h">
+      <Filter>Header\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="InspectionEnvironment.h">
+      <Filter>Header\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="UniversalDiskFormatModel.h">
+      <Filter>Header\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="MUIController.h">
+      <Filter>Header\Controller</Filter>
+    </ClInclude>
+    <ClInclude Include="LangFileFormatController.h">
+      <Filter>Header\Controller</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header">
+      <UniqueIdentifier>{b51d6a6c-c954-46a0-aae7-ce07e372f29a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources">
+      <UniqueIdentifier>{36f2e027-ac14-4b4b-b664-b2ff9d0925c7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header\View">
+      <UniqueIdentifier>{5d9e9672-b3f9-46a8-8e6d-27ad2bf5d899}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header\Controller">
+      <UniqueIdentifier>{473459e5-3a0d-4bc6-be98-c50810b5e346}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources">
+      <UniqueIdentifier>{b13b4b1d-0d35-4662-ab6d-3dc0cd188dc8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\View">
+      <UniqueIdentifier>{348c80af-7aaf-431b-ab77-b95091a7b4d7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\Model">
+      <UniqueIdentifier>{25e18822-a18e-4ce4-b375-ae4b5be457c2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\Controller">
+      <UniqueIdentifier>{0902dbda-a168-482b-a03c-44ef64cc4c05}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header\Model">
+      <UniqueIdentifier>{301932d6-40e2-46cc-b677-f49d99c02a2d}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="iBurn.rc">
+      <Filter>Resources</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Image\small.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="App.ini" />
+  </ItemGroup>
+  <ItemGroup>
+    <Manifest Include="iBurnMgr.manifest" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="en.lang" />
+    <None Include="zh-CN.lang" />
+    <None Include="app.config" />
+  </ItemGroup>
+</Project>

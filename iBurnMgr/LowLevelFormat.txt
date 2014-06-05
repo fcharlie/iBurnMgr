@@ -1,0 +1,135 @@
+//硬盘低级格式化的研究
+#include <winioctl.h>
+#include <string.h>
+#include <ctype.h>
+#include <memory.h>
+BOOL GetDiskGeometry(HANDLE hDisk,PDISK_GEOMETRY lpGeometry )
+{
+    DWORD ReturnedByteCount;
+
+    return DeviceIoControl(
+                hDisk,
+                IOCTL_DISK_GET_DRIVE_GEOMETRY,
+                NULL,
+                0,
+                lpGeometry,
+                sizeof(*lpGeometry),
+                &ReturnedByteCount,
+                NULL
+                );
+}
+DWORD GetSupportedGeometrys(
+    HANDLE hDisk
+    )
+{
+    DWORD ReturnedByteCount;
+    BOOL b;
+    DWORD NumberSupported;
+
+    b = DeviceIoControl(
+                hDisk,
+                IOCTL_DISK_GET_MEDIA_TYPES,
+                NULL,
+                0,
+                SupportedGeometry,
+                sizeof(SupportedGeometry),
+                &ReturnedByteCount,
+                NULL
+                );
+    if ( b ) {
+        NumberSupported = ReturnedByteCount / sizeof(DISK_GEOMETRY);
+        }
+    else {
+        NumberSupported = 0;
+        }
+    SupportedGeometryCount = NumberSupported;
+
+    return NumberSupported;
+}
+BOOL  LowLevelFormat(HANDLE hDisk,PDISK_GEOMETRY lpGeometry )
+{
+    FORMAT_PARAMETERS FormatParameters;
+    PBAD_TRACK_NUMBER lpBadTrack;
+    UINT i;
+    BOOL b;
+    DWORD ReturnedByteCount;
+
+    FormatParameters.MediaType = lpGeometry->MediaType;
+    FormatParameters.StartHeadNumber = 0;
+    FormatParameters.EndHeadNumber = lpGeometry->TracksPerCylinder - 1;
+    lpBadTrack = (PBAD_TRACK_NUMBER) LocalAlloc(LMEM_ZEROINIT,lpGeometry->TracksPerCylinder*sizeof(*lpBadTrack));
+
+    for (i = 0; i < lpGeometry->Cylinders.LowPart; i++) {
+
+        FormatParameters.StartCylinderNumber = i;
+        FormatParameters.EndCylinderNumber = i;
+
+        b = DeviceIoControl(
+                hDisk,
+                IOCTL_DISK_FORMAT_TRACKS,
+                &FormatParameters,
+                sizeof(FormatParameters),
+                lpBadTrack,
+                lpGeometry->TracksPerCylinder*sizeof(*lpBadTrack),
+                &ReturnedByteCount,
+                NULL
+                );
+
+        if (!b ) {
+            LocalFree(lpBadTrack);
+            return b;
+            }
+        }
+
+    LocalFree(lpBadTrack);
+
+    return TRUE;
+}
+
+BOOL LockVolume( HANDLE hDisk  )
+{
+    DWORD ReturnedByteCount;
+
+    return DeviceIoControl(
+                hDisk,
+                FSCTL_LOCK_VOLUME,
+                NULL,
+                0,
+                NULL,
+                0,
+                &ReturnedByteCount,
+                NULL
+                );
+}
+
+BOOL UnlockVolume(   HANDLE hDisk   )
+{
+    DWORD ReturnedByteCount;
+
+    return DeviceIoControl(
+                hDisk,
+                FSCTL_UNLOCK_VOLUME,
+                NULL,
+                0,
+                NULL,
+                0,
+                &ReturnedByteCount,
+                NULL
+                );
+}
+
+BOOL DismountVolume( HANDLE hDisk   )
+{
+    DWORD ReturnedByteCount;
+
+    return DeviceIoControl(
+                hDisk,
+                FSCTL_DISMOUNT_VOLUME,
+                NULL,
+                0,
+                NULL,
+                0,
+                &ReturnedByteCount,
+                NULL
+                );
+}
