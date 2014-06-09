@@ -8,6 +8,6 @@ iBurnMgr used WTL framework, using Direct2D rendering Push Button, close and min
 
 Format the USB flash drive comes format.com tools rely on Windows, unzip the ISO image using 7z, repair USB flash drive using the Windows ADK's bootsect.exe
 
-In the second edition or third edition, iBurnMgr will eliminate reliance on third-party tools
+In the second edition or third edition, iBurnMgr will eliminate reliance on third-party tools.
 
 
