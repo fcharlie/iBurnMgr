@@ -23,7 +23,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance,
 	Metro::MetroWindow iMetroWindow;
 	
 	RECT rect = { (::GetSystemMetrics(SM_CXSCREEN) - 720) / 2, (::GetSystemMetrics(SM_CYSCREEN) - 450) / 2, (::GetSystemMetrics(SM_CXSCREEN) + 720) / 2, (::GetSystemMetrics(SM_CYSCREEN) + 450) / 2 };
-	if (iMetroWindow.Create(nullptr, rect, METRO_INTERNAL_WINDOWLNAME, WS_OVERLAPPED | WS_CLIPCHILDREN | WS_CLIPSIBLINGS, WS_EX_ACCEPTFILES) == nullptr)
+	if (iMetroWindow.Create(nullptr, rect, METRO_INTERNAL_WINDOWLNAME, WS_OVERLAPPED  | WS_CLIPSIBLINGS | WS_MINIMIZEBOX | WS_POPUP | WS_SYSMENU, WS_EX_APPWINDOW | WS_EX_WINDOWEDGE|WS_EX_ACCEPTFILES) == nullptr)
 	{
 		return -1;
 	}
