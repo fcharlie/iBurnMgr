@@ -1,4 +1,4 @@
-iBurnMgr
+iBurnMgr [![Build Status](https://travis-ci.org/pocoproject/poco.png?branch=develop)](https://github.com/forcegroup/iBurnMgr)
 ========
 iBurnMgr is a 'Metro Style' USB Drives Burn Boot Manager.
 
