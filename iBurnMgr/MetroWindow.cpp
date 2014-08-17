@@ -528,7 +528,7 @@ LRESULT MetroWindow::OnMinSize(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& b
 
 LRESULT MetroWindow::OnSupport(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled)
 {
-	ShellExecute(m_hWnd, L"open",L"https://github.com/huxizero",NULL,NULL,SW_MAXIMIZE);
+	ShellExecute(m_hWnd, L"open",L"https://github.com/forcegroup",NULL,NULL,SW_MAXIMIZE);
 	return 0;
 }
 
