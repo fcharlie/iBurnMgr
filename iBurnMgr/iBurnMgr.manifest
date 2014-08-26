@@ -22,8 +22,14 @@
     </application>
   </compatibility>
   
+  </compatibility>
+  	<asmv3:application xmlns:asmv3="urn:schemas-microsoft-com:asm.v3">
+		<asmv3:windowsSettings xmlns="http://schemas.microsoft.com/SMI/2005/WindowsSettings">
+			<dpiAware>true</dpiAware>
+		</asmv3:windowsSettings>
+	</asmv3:application>
   <!-- 启用 Windows 公共控件和对话框的主题(Windows XP 和更高版本) -->
-  <dependency>
+  <!--<dependency>
     <dependentAssembly>
       <assemblyIdentity
           type="win32"
@@ -34,6 +40,11 @@
           language="*"
         />
     </dependentAssembly>
-  </dependency>
+  </dependency>-->
+<dependency optional="yes">
+		<dependentAssembly>
+			<assemblyIdentity type="win32" name="Microsoft.Windows.Common-Controls" version="6.0.1.0" publicKeyToken="6595b64144ccf1df" language="*" processorArchitecture="*"></assemblyIdentity>
+		</dependentAssembly>
+	</dependency>
 
 </asmv1:assembly>
