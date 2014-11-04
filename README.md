@@ -17,5 +17,5 @@ In the second edition or third edition, iBurnMgr will eliminate reliance on thir
 **Create BootUSB Success**
 ![SUCCRSS](https://raw.githubusercontent.com/forcegroup/iBurnMgr/master/ImageShow/101.JPG)
 
-**Create Fiald**
-![FIALD](https://raw.githubusercontent.com/forcegroup/iBurnMgr/master/ImageShow/Image2.JPG)
+**Create Faild**
+![FAILD](https://raw.githubusercontent.com/forcegroup/iBurnMgr/master/ImageShow/Image2.JPG)
