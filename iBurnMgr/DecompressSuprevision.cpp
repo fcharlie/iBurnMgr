@@ -129,7 +129,16 @@ namespace Decompress{
 	{
 
 		WCHAR FormatCmd[260] = { 0 };
-		wcscpy_s(FormatCmd, L"C:\\Windows\\System32\\format.com ");
+		if(!SUCCEEDED(SHGetFolderPath(NULL, 
+                             CSIDL_WINDOWS|CSIDL_FLAG_NO_ALIAS, 
+                             NULL, 
+                             0, 
+                             FormatCmd))) 
+         {
+			 //Not Found format.com
+			 return false;
+		 }
+		wcscat_s(FormatCmd, L"\\System32\\format.com ");
 		wcscat_s(FormatCmd, m_latter.c_str());
 		wcscat_s(FormatCmd, L" /y /FS:NTFS /v:METROBOOT /q /x /A:4096");
 		PROCESS_INFORMATION pi;
