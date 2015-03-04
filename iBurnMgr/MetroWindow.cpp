@@ -10,7 +10,7 @@
 #include "ResolveBootSupervisor.h"
 
 //#include <d2d1helper.h>
-#include <wincodec.h>
+
 #pragma comment(lib, "d2d1.lib")
 #pragma comment(lib,"dwrite.lib")
 #pragma comment (lib,"Uxtheme.lib")
@@ -47,7 +47,7 @@ Interface **ppInterfaceToRelease
 		(*ppInterfaceToRelease) = NULL;
 	}
 }
-
+#define SAFE_RELEASE(P) if(P){P->Release() ; P = NULL ;}
 typedef  D2D1_RECT_F FRECT;
 
 FRECT  ToFloatRect(RECT rect)
@@ -59,10 +59,188 @@ FRECT  ToFloatRect(RECT rect)
 	frect.top = (float)rect.top;
 	return frect;
 }
+#ifndef HINST_THISCOMPONENT
+EXTERN_C IMAGE_DOS_HEADER __ImageBase;
+#define HINST_THISCOMPONENT ((HINSTANCE)&__ImageBase)
+#endif
+
+
+HRESULT LoadResourceBitmap(
+	ID2D1RenderTarget* pRendertarget,
+	IWICImagingFactory* pIWICFactory,
+	PCWSTR resourceName,
+	PCWSTR resourceType,
+	UINT destinationWidth,
+	UINT destinationHeight,
+	ID2D1Bitmap** ppBitmap
+	)
+{
+	HRESULT hr = S_OK;
+
+	IWICBitmapDecoder* pDecoder = NULL;
+	IWICBitmapFrameDecode* pSource = NULL;
+	IWICStream* pStream = NULL;
+	IWICFormatConverter* pConverter = NULL;
+	IWICBitmapScaler* pScaler = NULL;
+
+	HRSRC imageResHandle = NULL;
+	HGLOBAL imageResDataHandle = NULL;
+	void* pImageFile = NULL;
+	DWORD imageFileSize = 0;
+
+	// Find the resource then load it
+	imageResHandle = FindResource(HINST_THISCOMPONENT, resourceName, resourceType);
+	hr = imageResHandle ? S_OK : E_FAIL;
+	if (SUCCEEDED(hr))
+	{
+		imageResDataHandle = LoadResource(HINST_THISCOMPONENT, imageResHandle);
+
+		hr = imageResDataHandle ? S_OK : E_FAIL;
+	}
+
+	// Lock the resource and calculate the image's size
+	if (SUCCEEDED(hr))
+	{
+		// Lock it to get the system memory pointer
+		pImageFile = LockResource(imageResDataHandle);
+
+		hr = pImageFile ? S_OK : E_FAIL;
+	}
+	if (SUCCEEDED(hr))
+	{
+		// Calculate the size
+		imageFileSize = SizeofResource(HINST_THISCOMPONENT, imageResHandle);
+
+		hr = imageFileSize ? S_OK : E_FAIL;
+	}
+
+	// Create an IWICStream object
+	if (SUCCEEDED(hr))
+	{
+		// Create a WIC stream to map onto the memory
+		hr = pIWICFactory->CreateStream(&pStream);
+	}
+
+	if (SUCCEEDED(hr))
+	{
+		// Initialize the stream with the memory pointer and size
+		hr = pStream->InitializeFromMemory(
+			reinterpret_cast<BYTE*>(pImageFile),
+			imageFileSize
+			);
+	}
+
+	// Create IWICBitmapDecoder
+	if (SUCCEEDED(hr))
+	{
+		// Create a decoder for the stream
+		hr = pIWICFactory->CreateDecoderFromStream(
+			pStream,
+			NULL,
+			WICDecodeMetadataCacheOnLoad,
+			&pDecoder
+			);
+	}
+
+	// Retrieve a frame from the image and store it in an IWICBitmapFrameDecode object
+	if (SUCCEEDED(hr))
+	{
+		// Create the initial frame
+		hr = pDecoder->GetFrame(0, &pSource);
+	}
+
+	// Before Direct2D can use the image, it must be converted to the 32bppPBGRA pixel format.
+	// To convert the image format, use the IWICImagingFactory::CreateFormatConverter method to create an IWICFormatConverter object, then use the IWICFormatConverter object's Initialize method to perform the conversion.
+	if (SUCCEEDED(hr))
+	{
+		// Convert the image format to 32bppPBGRA
+		// (DXGI_FORMAT_B8G8R8A8_UNORM + D2D1_ALPHA_MODE_PREMULTIPLIED).
+		hr = pIWICFactory->CreateFormatConverter(&pConverter);
+	}
+
+	if (SUCCEEDED(hr))
+	{
+		// If a new width or height was specified, create and
+		// IWICBitmapScaler and use it to resize the image.
+		if (destinationWidth != 0 || destinationHeight != 0)
+		{
+			UINT originalWidth;
+			UINT originalHeight;
+			hr = pSource->GetSize(&originalWidth, &originalHeight);
+			if (SUCCEEDED(hr))
+			{
+				if (destinationWidth == 0)
+				{
+					FLOAT scalar = static_cast<FLOAT>(destinationHeight) / static_cast<FLOAT>(originalHeight);
+					destinationWidth = static_cast<UINT>(scalar * static_cast<FLOAT>(originalWidth));
+				}
+				else if (destinationHeight == 0)
+				{
+					FLOAT scalar = static_cast<FLOAT>(destinationWidth) / static_cast<FLOAT>(originalWidth);
+					destinationHeight = static_cast<UINT>(scalar * static_cast<FLOAT>(originalHeight));
+				}
+
+				hr = pIWICFactory->CreateBitmapScaler(&pScaler);
+				if (SUCCEEDED(hr))
+				{
+					hr = pScaler->Initialize(
+						pSource,
+						destinationWidth,
+						destinationHeight,
+						WICBitmapInterpolationModeCubic
+						);
+					if (SUCCEEDED(hr))
+					{
+						hr = pConverter->Initialize(
+							pScaler,
+							GUID_WICPixelFormat32bppPBGRA,
+							WICBitmapDitherTypeNone,
+							NULL,
+							0.f,
+							WICBitmapPaletteTypeMedianCut
+							);
+					}
+				}
+			}
+		}
+
+		else // use default width and height
+		{
+			hr = pConverter->Initialize(
+				pSource,
+				GUID_WICPixelFormat32bppPBGRA,
+				WICBitmapDitherTypeNone,
+				NULL,
+				0.f,
+				WICBitmapPaletteTypeMedianCut
+				);
+		}
+	}
+
+	// Finally, Create an ID2D1Bitmap object, that can be drawn by a render target and used with other Direct2D objects
+	if (SUCCEEDED(hr))
+	{
+		// Create a Direct2D bitmap from the WIC bitmap
+		hr = pRendertarget->CreateBitmapFromWicBitmap(
+			pConverter,
+			NULL,
+			ppBitmap
+			);
+	}
+
+	SAFE_RELEASE(pDecoder);
+	SAFE_RELEASE(pSource);
+	SAFE_RELEASE(pStream);
+	SAFE_RELEASE(pConverter);
+	SAFE_RELEASE(pScaler);
+
+	return hr;
+}
 
 
 MetroWindow::MetroWindow() :m_pDirect2dFactory(NULL),
 m_pRenderTarget(NULL),
+m_NoClinetBrush(NULL),
 m_pDarkBlueBindBrush(NULL),
 m_pMetroButtonNsBrush(NULL),
 m_pMetroButtonLsBrush(NULL),
@@ -74,6 +252,8 @@ m_pDWriteTypography(NULL),
 m_pLightRedBrush(NULL),
 m_pContentAreaBrush(NULL),
 m_pTextAreaBrush(NULL),
+pWICFactory(NULL),
+pBitmap(NULL),
 m_pITextFormat(NULL),
 m_pITextFormatCtl(NULL),
 m_pIDWriteFactory(NULL),
@@ -84,10 +264,10 @@ dwExit(0)
 {
 	if (IsUserAnAdmin())
 	{
-		windowTitle = L"Metro USB Drives Burn Boot Manager [Administrator]";
+		windowTitle = L"Metro USB Drives Boot Manager [Administrator]";
 	}
 	else{
-		windowTitle = L"Metro USB Drives Burn Boot Manager";
+		windowTitle = L"Metro USB Drives Boot Manager";
 	}
 	if (localehlp.lcid == 2052)
 	{
@@ -113,6 +293,7 @@ MetroWindow::~MetroWindow()
 {
 	SafeRelease(&m_pDirect2dFactory);
 	SafeRelease(&m_pRenderTarget);
+	SafeRelease(&m_NoClinetBrush);
 	SafeRelease(&m_pDarkBlueBindBrush);
 	SafeRelease(&m_pMetroButtonNsBrush);
 	SafeRelease(&m_pMetroButtonLsBrush);
@@ -123,6 +304,8 @@ MetroWindow::~MetroWindow()
 	SafeRelease(&m_pLightRedBrush);
 	SafeRelease(&m_pTextAreaBrush);
 	SafeRelease(&m_pControlTextBrush);
+	//SafeRelease(&pBitmap);
+	//SafeRelease(&pWICFactory);
 	SafeRelease(&m_pDWriteTypography);
 	SafeRelease(&m_pIDWriteFactory);
 	SafeRelease(&m_pITextFormat);
@@ -198,6 +381,7 @@ LRESULT MetroWindow::OnPaint(UINT nMsg, WPARAM wParam, LPARAM lParam, BOOL & bHa
 	::BeginPaint(m_hWnd, &ps);
 	OnRender();
 	::EndPaint(m_hWnd, &ps);
+	ValidateRect(NULL);
 	return 0;
 }
 LRESULT MetroWindow::OnSize(UINT nMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled)
@@ -331,6 +515,7 @@ LRESULT MetroWindow::OnRButtonUp(UINT nMsg, WPARAM wParam, LPARAM lParam, BOOL &
 	}
 	return 0;
 }
+
 
 LRESULT MetroWindow::OnDeviceChange(UINT nMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled)
 {
@@ -720,6 +905,7 @@ HRESULT MetroWindow::Initialize()
 	hr = CreateDeviceIndependentResources();
 	FLOAT dpiX, dpiY;
 	m_pDirect2dFactory->GetDesktopDpi(&dpiX, &dpiY);
+	
 	return hr;
 }
 
@@ -727,7 +913,6 @@ HRESULT MetroWindow::CreateDeviceIndependentResources()
 {
 	HRESULT hr = S_OK;
 
-	// Create a Direct2D factory.
 	hr = D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &m_pDirect2dFactory);
 
 	return hr;
@@ -747,16 +932,29 @@ HRESULT MetroWindow::CreateDeviceResources()
 			rc.bottom - rc.top
 			);
 
-		// Create a Direct2D render target.
 		hr = m_pDirect2dFactory->CreateHwndRenderTarget(
 			D2D1::RenderTargetProperties(),
 			D2D1::HwndRenderTargetProperties(m_hWnd, size),
 			&m_pRenderTarget
 			);
-
+		if (SUCCEEDED(hr)){
+		hr = CoCreateInstance(
+				CLSID_WICImagingFactory1,
+				NULL,
+				CLSCTX_INPROC_SERVER,
+				IID_IWICImagingFactory,
+				reinterpret_cast<void **>(&pWICFactory)
+				);
+		}
 		if (SUCCEEDED(hr))
 		{
-			// Create a gray brush.
+			hr = LoadResourceBitmap(m_pRenderTarget, pWICFactory,
+				MAKEINTRESOURCE(IDP_EMOJI_LOG),
+				L"PNG",
+				0, 0, &pBitmap);
+		}
+		if (SUCCEEDED(hr))
+		{
 			hr = m_pRenderTarget->CreateSolidColorBrush(
 				D2D1::ColorF(D2D1::ColorF::DarkTurquoise),
 				&m_pBackgroundLightBrush
@@ -764,7 +962,6 @@ HRESULT MetroWindow::CreateDeviceResources()
 		}
 		if (SUCCEEDED(hr))
 		{
-			// Create a gray brush.
 			hr = m_pRenderTarget->CreateSolidColorBrush(
 				D2D1::ColorF(0x3867B2),
 				&m_pDarkBlueBindBrush
@@ -772,7 +969,13 @@ HRESULT MetroWindow::CreateDeviceResources()
 		}
 		if (SUCCEEDED(hr))
 		{
-			// Create a gray brush.
+			hr = m_pRenderTarget->CreateSolidColorBrush(
+				D2D1::ColorF(D2D1::ColorF::Gainsboro),
+				&m_NoClinetBrush
+				);
+		}
+		if (SUCCEEDED(hr))
+		{
 			hr = m_pRenderTarget->CreateSolidColorBrush(
 				D2D1::ColorF(D2D1::ColorF::Firebrick),
 				&m_pLightRedBrush
@@ -780,7 +983,6 @@ HRESULT MetroWindow::CreateDeviceResources()
 		}
 		if (SUCCEEDED(hr))
 		{
-			// Create a gray brush.
 			hr = m_pRenderTarget->CreateSolidColorBrush(
 				D2D1::ColorF(D2D1::ColorF::PaleTurquoise),
 				&m_pStatusAreaBrush
@@ -788,16 +990,13 @@ HRESULT MetroWindow::CreateDeviceResources()
 		}
 		if (SUCCEEDED(hr))
 		{
-			// Create a gray brush.
 			hr = m_pRenderTarget->CreateSolidColorBrush(
 				D2D1::ColorF(D2D1::ColorF::White),
 				&m_pLightWhiteBrush
 				);
 		}
-		//m_pLightWhiteBrush
 		if (SUCCEEDED(hr))
 		{
-			// Create a blue brush.
 			hr = m_pRenderTarget->CreateSolidColorBrush(
 				D2D1::ColorF(D2D1::ColorF::DarkOrange),
 				&m_pMetroButtonNsBrush
@@ -805,7 +1004,6 @@ HRESULT MetroWindow::CreateDeviceResources()
 		}
 		if (SUCCEEDED(hr))
 		{
-			// Create a blue brush.
 			hr = m_pRenderTarget->CreateSolidColorBrush(
 				D2D1::ColorF(D2D1::ColorF::Orange),
 				&m_pMetroButtonLsBrush
@@ -821,7 +1019,7 @@ HRESULT MetroWindow::CreateDeviceResources()
 		if (SUCCEEDED(hr))
 		{
 			hr = m_pRenderTarget->CreateSolidColorBrush(
-				D2D1::ColorF(0x06B1DD),
+				D2D1::ColorF(D2D1::ColorF::Silver),
 				&m_pContentAreaBrush
 				);
 		}
@@ -886,7 +1084,7 @@ HRESULT MetroWindow::OnRender()
 	{
 		m_pRenderTarget->BeginDraw();
 		m_pRenderTarget->SetTransform(D2D1::Matrix3x2F::Identity());
-		m_pRenderTarget->Clear(D2D1::ColorF(0x6CD3D9));
+		m_pRenderTarget->Clear(D2D1::ColorF(D2D1::ColorF::Purple));
 		////Draw Exit area
 		POINT pt;
 		GetCursorPos(&pt);
@@ -901,13 +1099,25 @@ HRESULT MetroWindow::OnRender()
 
 #pragma warning(disable:4244)
 #pragma warning(disable:4267)
+		m_pRenderTarget->FillRectangle(D2D1::RectF(0, 0, rtSize.width, 36),m_NoClinetBrush);
+		D2D1_SIZE_F size = pBitmap->GetSize();
+		D2D1_POINT_2F upperLeftCorner = D2D1::Point2F(0.f, 0.f);
+
+		m_pRenderTarget->DrawBitmap(
+			pBitmap,
+			D2D1::RectF(
+			upperLeftCorner.x,
+			upperLeftCorner.y,
+			upperLeftCorner.x + size.width,
+			upperLeftCorner.y + size.height)
+			);
+
 		m_pRenderTarget->FillRectangle(D2D1::RectF(xArea.left, xArea.top, xArea.right, xArea.bottom), m_pContentAreaBrush);
 		m_pRenderTarget->FillRectangle(D2D1::RectF(xArea.left, xArea.bottom + 10.0f, xArea.right / 2 - 60.f, xArea.bottom + 200.0f), m_pBackgroundLightBrush);
 		m_pRenderTarget->FillRectangle(D2D1::RectF(xArea.right / 2 - 50.f, xArea.bottom + 10.0f, xArea.right, xArea.bottom + 200.0f), m_pStatusAreaBrush);
 		m_pRenderTarget->FillRectangle(D2D1::RectF(120, 130, 680, 157), m_pTextAreaBrush);
-
 		//// Text Draw
-		m_pRenderTarget->DrawTextW(windowTitle.c_str(), windowTitle.length(), m_pITextFormat, D2D1::RectF(10, 5, 600, 25), m_pControlTextBrush, D2D1_DRAW_TEXT_OPTIONS_NONE, DWRITE_MEASURING_MODE_NATURAL);
+		m_pRenderTarget->DrawTextW(windowTitle.c_str(), windowTitle.length(), m_pITextFormat, D2D1::RectF(35, 5, 600, 25), m_pControlTextBrush, D2D1_DRAW_TEXT_OPTIONS_NONE, DWRITE_MEASURING_MODE_NATURAL);
 
 		//m_pITextFormatCtl->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_TRAILING);
 		m_pRenderTarget->DrawTextW(L"USB Drives:", 11, m_pITextFormatCtl, D2D1::RectF(30, 60, 110, 85), m_pControlTextBrush, D2D1_DRAW_TEXT_OPTIONS_NONE, DWRITE_MEASURING_MODE_NATURAL);
@@ -928,21 +1138,21 @@ HRESULT MetroWindow::OnRender()
 		//Exit
 		if (pt.x >= m_rexit.place.left&&pt.x <= m_rexit.place.right&&pt.y >= m_rexit.place.top&&pt.y <= m_rexit.place.bottom){
 			m_pRenderTarget->FillRectangle(D2D1::RectF(m_rexit.place.left, m_rexit.place.top, m_rexit.place.right + 1, m_rexit.place.bottom), m_pLightRedBrush);
-			m_pRenderTarget->DrawLine(D2D1::Point2F(m_rexit.place.left + 17.5f, m_rexit.place.top + 6.5f), D2D1::Point2F(m_rexit.place.right - 17.5f, m_rexit.place.bottom - 6.5f), m_pLightWhiteBrush, 1.5f);
-			m_pRenderTarget->DrawLine(D2D1::Point2F(m_rexit.place.left + 17.5f, m_rexit.place.bottom - 6.5f), D2D1::Point2F(m_rexit.place.right - 17.5f, m_rexit.place.top + 6.5f), m_pLightWhiteBrush, 1.5f);
+			m_pRenderTarget->DrawLine(D2D1::Point2F(m_rexit.place.left + 17.5f, m_rexit.place.top + 6.5f), D2D1::Point2F(m_rexit.place.right - 17.5f, m_rexit.place.bottom - 6.5f), m_pLightWhiteBrush, 1.0f);
+			m_pRenderTarget->DrawLine(D2D1::Point2F(m_rexit.place.left + 17.5f, m_rexit.place.bottom - 6.5f), D2D1::Point2F(m_rexit.place.right - 17.5f, m_rexit.place.top + 6.5f), m_pLightWhiteBrush, 1.0f);
 		}
 		else{
-			m_pRenderTarget->DrawLine(D2D1::Point2F(m_rexit.place.left + 17.5f, m_rexit.place.top + 6.5f), D2D1::Point2F(m_rexit.place.right - 17.5f, m_rexit.place.bottom - 6.5f), m_pControlTextBrush, 1.5f);
-			m_pRenderTarget->DrawLine(D2D1::Point2F(m_rexit.place.left + 17.5f, m_rexit.place.bottom - 6.5f), D2D1::Point2F(m_rexit.place.right - 17.5f, m_rexit.place.top + 6.5f), m_pControlTextBrush, 1.5f);
+			m_pRenderTarget->DrawLine(D2D1::Point2F(m_rexit.place.left + 17.5f, m_rexit.place.top + 6.5f), D2D1::Point2F(m_rexit.place.right - 17.5f, m_rexit.place.bottom - 6.5f), m_pControlTextBrush, 1.0f);
+			m_pRenderTarget->DrawLine(D2D1::Point2F(m_rexit.place.left + 17.5f, m_rexit.place.bottom - 6.5f), D2D1::Point2F(m_rexit.place.right - 17.5f, m_rexit.place.top + 6.5f), m_pControlTextBrush, 1.0f);
 		}
 		//Min
 		if (pt.x >= m_rmin.place.left&&pt.x < m_rmin.place.right&&pt.y >= m_rmin.place.top&&pt.y <= m_rmin.place.bottom)
 		{
 			m_pRenderTarget->FillRectangle(D2D1::RectF(m_rmin.place.left, m_rmin.place.top, m_rmin.place.right, m_rmin.place.bottom), m_pDarkBlueBindBrush);
-			m_pRenderTarget->DrawLine(D2D1::Point2F(m_rmin.place.left + 17, m_rmin.place.top + 15), D2D1::Point2F(m_rmin.place.right - 17, m_rmin.place.top + 15), m_pLightWhiteBrush, 2.5f);
+			m_pRenderTarget->DrawLine(D2D1::Point2F(m_rmin.place.left + 17, m_rmin.place.top + 15), D2D1::Point2F(m_rmin.place.right - 17, m_rmin.place.top + 15), m_pLightWhiteBrush, 1.2f);
 		}
 		else{
-			m_pRenderTarget->DrawLine(D2D1::Point2F(m_rmin.place.left + 17, m_rmin.place.top + 15), D2D1::Point2F(m_rmin.place.right - 17, m_rmin.place.top + 15), m_pControlTextBrush, 2.3f);
+			m_pRenderTarget->DrawLine(D2D1::Point2F(m_rmin.place.left + 17, m_rmin.place.top + 15), D2D1::Point2F(m_rmin.place.right - 17, m_rmin.place.top + 15), m_pControlTextBrush, 1.2f);
 		}
 		//find
 		if (pt.x >= m_mbFind.place.left&&pt.x <= m_mbFind.place.right&&pt.y >= m_mbFind.place.top&&pt.y <= m_mbFind.place.bottom)

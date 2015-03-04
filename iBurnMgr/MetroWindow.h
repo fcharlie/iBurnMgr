@@ -6,10 +6,11 @@
 #include "resource.h"
 #include "APIController.h"
 #include "MUIController.h"
+#include <wincodec.h>
 //#define NAMESPACEMETRO namespace Metro{
 //#define ENDNAMESPACE }
 
-typedef CWinTraits<WS_OVERLAPPED | WS_CLIPCHILDREN  | WS_CLIPSIBLINGS | WS_MINIMIZEBOX | WS_POPUP | WS_SYSMENU, WS_EX_APPWINDOW | WS_EX_WINDOWEDGE> CMetroWindowTraits;
+typedef CWinTraits<WS_OVERLAPPED | WS_CLIPCHILDREN | WS_CLIPSIBLINGS, WS_EX_APPWINDOW | WS_EX_WINDOWEDGE> CMetroWindowTraits;
 
 LRESULT WINAPI CreateTaskDialogIndirectFd(
 	__in HWND		hwndParent,
@@ -41,6 +42,7 @@ namespace Metro{
 		DWORD FontTabel;
 		ID2D1Factory* m_pDirect2dFactory;
 		ID2D1HwndRenderTarget* m_pRenderTarget;
+		ID2D1SolidColorBrush*m_NoClinetBrush;
 		ID2D1SolidColorBrush* m_pDarkBlueBindBrush;
 		ID2D1SolidColorBrush* m_pMetroButtonNsBrush;
 		ID2D1SolidColorBrush* m_pMetroButtonLsBrush;
@@ -51,6 +53,9 @@ namespace Metro{
 		ID2D1SolidColorBrush* m_pContentAreaBrush;
 		ID2D1SolidColorBrush* m_pControlTextBrush;
 		ID2D1SolidColorBrush* m_pTextAreaBrush;
+
+		IWICImagingFactory*		pWICFactory;
+		ID2D1Bitmap* pBitmap;
 		IDWriteTextFormat* m_pITextFormat;
 		IDWriteTextFormat* m_pITextFormatCtl;
 		IDWriteFactory* m_pIDWriteFactory;
