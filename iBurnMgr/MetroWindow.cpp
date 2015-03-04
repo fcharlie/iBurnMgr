@@ -344,27 +344,31 @@ LRESULT MetroWindow::OnCreate(UINT nMsg, WPARAM wParam, LPARAM lParam, BOOL & bH
 	hFont = CreateFontIndirect(&logFont);
 
 	InitCommonControls();
-	HWND hCob;
-	HWND hEdit;
+	//HWND hCob;
+	//HWND hEdit;
 	DWORD dwCobExStyle = WS_EX_LEFT | WS_EX_LTRREADING | WS_EX_RIGHTSCROLLBAR | WS_EX_NOPARENTNOTIFY;
-	DWORD dwCobStyle = WS_CHILDWINDOW | WS_VISIBLE | WS_TABSTOP | CBS_DROPDOWNLIST | CBS_SORT | CBS_HASSTRINGS;
+	DWORD dwCobStyle = WS_CHILDWINDOW | WS_CLIPSIBLINGS | WS_VISIBLE | WS_TABSTOP | CBS_DROPDOWNLIST | CBS_SORT | CBS_HASSTRINGS;
 	DWORD dwEditExSt = WS_EX_LEFT | WS_EX_LTRREADING | WS_EX_RIGHTSCROLLBAR | WS_EX_NOPARENTNOTIFY | WS_EX_CLIENTEDGE;
-	DWORD dwEditSt = WS_CHILDWINDOW | WS_VISIBLE | WS_TABSTOP | ES_LEFT | ES_AUTOHSCROLL;
+	DWORD dwEditSt = WS_CHILDWINDOW | WS_CLIPSIBLINGS | WS_VISIBLE | WS_TABSTOP | ES_LEFT | ES_AUTOHSCROLL;
 
 	DWORD dwpgExSt = WS_EX_LEFT | WS_EX_LTRREADING | WS_EX_RIGHTSCROLLBAR | WS_EX_NOPARENTNOTIFY;
-	DWORD dwpgSt = WS_CHILDWINDOW | WS_VISIBLE;
+	DWORD dwpgSt = WS_CHILDWINDOW | WS_CLIPSIBLINGS | WS_VISIBLE;
 
-	hCob = CreateWindowEx(dwCobExStyle, WC_COMBOBOX, L"Driver", dwCobStyle, 120, 60, 560, 24, m_hWnd, HMENU(IDC_COMBOX_DEVICE), _Module.m_hInst, NULL);
-	hEdit = CreateWindowEx(dwEditExSt, WC_EDIT, L"", dwEditSt, 120, 95, 441, 27, m_hWnd, HMENU(IDC_EDIT_IMAGE), _Module.m_hInst, NULL);
+	//hCob = CreateWindowEx(dwCobExStyle, WC_COMBOBOX, L"Driver", dwCobStyle, 120, 60, 560, 24, m_hWnd, HMENU(IDC_COMBOX_DEVICE), _Module.m_hInst, NULL);
+	RECT cbRect = { 120, 60, 680, 84 };
+	RECT ceRect = {120,92,561,122};
+	m_combox.Create(m_hWnd, cbRect, nullptr, dwCobStyle, dwCobExStyle, IDC_COMBOX_DEVICE, nullptr);
+	//hEdit = CreateWindowEx(dwEditExSt, WC_EDIT, L"", dwEditSt, 120, 95, 441, 27, m_hWnd, HMENU(IDC_EDIT_IMAGE), _Module.m_hInst, NULL);
+	m_edit.Create(m_hWnd, ceRect, nullptr, dwEditSt, dwEditExSt, IDC_EDIT_IMAGE, nullptr);
 	RECT rect = {320,290,680,310};
 	m_proge.Create(m_hWnd, rect, L"Progress Times", dwpgSt, dwpgExSt, HMENU(IDC_PROCESS_TIME), NULL);
-	::SendMessage(hCob, WM_SETFONT, (WPARAM)hFont, lParam);
-	::SendMessage(hEdit, WM_SETFONT, (WPARAM)hFont, lParam);
+	m_combox.SendMessage(WM_SETFONT, (WPARAM)hFont, lParam);
+	m_edit.SendMessage( WM_SETFONT, (WPARAM)hFont, lParam);
 	UINT usbnub = TraversalEquipment();
 	if (usbnub > 0)
 	{
 		for (UINT i = 0; i < usbnub; i++){
-			SendMessage(hCob, CB_ADDSTRING, 0, (LPARAM)(DrivesList[i].SizeInfo));
+			m_combox.SendMessage(CB_ADDSTRING, 0, (LPARAM) (DrivesList[i].SizeInfo));
 		}
 	}
 	Initialize();
@@ -377,13 +381,21 @@ LRESULT MetroWindow::OnCreate(UINT nMsg, WPARAM wParam, LPARAM lParam, BOOL & bH
 
 LRESULT MetroWindow::OnPaint(UINT nMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled)
 {
+	//Invalidate(FALSE);
 	PAINTSTRUCT ps;
 	::BeginPaint(m_hWnd, &ps);
+	//HDC dcBuffer = CreateCompatibleDC(hdc);
 	OnRender();
 	::EndPaint(m_hWnd, &ps);
-	ValidateRect(NULL);
+	//ValidateRect(NULL);
 	return 0;
 }
+
+LRESULT MetroWindow::OnErasebkgnd(UINT nMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled)
+{
+	return TRUE;
+}
+
 LRESULT MetroWindow::OnSize(UINT nMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled)
 {
 	GetClientRect(&m_rect);
@@ -1112,10 +1124,10 @@ HRESULT MetroWindow::OnRender()
 			upperLeftCorner.y + size.height)
 			);
 
-		m_pRenderTarget->FillRectangle(D2D1::RectF(xArea.left, xArea.top, xArea.right, xArea.bottom), m_pContentAreaBrush);
-		m_pRenderTarget->FillRectangle(D2D1::RectF(xArea.left, xArea.bottom + 10.0f, xArea.right / 2 - 60.f, xArea.bottom + 200.0f), m_pBackgroundLightBrush);
-		m_pRenderTarget->FillRectangle(D2D1::RectF(xArea.right / 2 - 50.f, xArea.bottom + 10.0f, xArea.right, xArea.bottom + 200.0f), m_pStatusAreaBrush);
-		m_pRenderTarget->FillRectangle(D2D1::RectF(120, 130, 680, 157), m_pTextAreaBrush);
+		//m_pRenderTarget->FillRectangle(D2D1::RectF(xArea.left, xArea.top, xArea.right, xArea.bottom), m_pContentAreaBrush);
+		//m_pRenderTarget->FillRectangle(D2D1::RectF(xArea.left, xArea.bottom + 10.0f, xArea.right / 2 - 60.f, xArea.bottom + 200.0f), m_pBackgroundLightBrush);
+		//m_pRenderTarget->FillRectangle(D2D1::RectF(xArea.right / 2 - 50.f, xArea.bottom + 10.0f, xArea.right, xArea.bottom + 200.0f), m_pStatusAreaBrush);
+		//m_pRenderTarget->FillRectangle(D2D1::RectF(120, 130, 680, 157), m_pTextAreaBrush);
 		//// Text Draw
 		m_pRenderTarget->DrawTextW(windowTitle.c_str(), windowTitle.length(), m_pITextFormat, D2D1::RectF(35, 5, 600, 25), m_pControlTextBrush, D2D1_DRAW_TEXT_OPTIONS_NONE, DWRITE_MEASURING_MODE_NATURAL);
 

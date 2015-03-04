@@ -86,6 +86,7 @@ namespace Metro{
 			MESSAGE_HANDLER(WM_RBUTTONUP, OnRButtonUp)
 			MESSAGE_HANDLER(WM_DEVICECHANGE,OnDeviceChange)
 			MESSAGE_HANDLER(WM_DROPFILES,OnDropfiles)
+			MESSAGE_HANDLER(WM_ERASEBKGND,OnErasebkgnd)
 			////
 			MESSAGE_HANDLER(METRO_MULTITHREAD_MSG,OnMultiThreadProcess)
 			MESSAGE_HANDLER(METRO_THREAD_RATESTATUS_MSG, OnDecompressOrFixBootRate)
@@ -108,6 +109,8 @@ namespace Metro{
 		LRESULT OnDeviceChange(UINT nMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled);
 		LRESULT OnMouseLeave(UINT nMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled);
 		LRESULT OnDropfiles(UINT nMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled);
+		LRESULT OnErasebkgnd(UINT nMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled);
+
 		LRESULT OnMultiThreadProcess(UINT nMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled);
 		LRESULT OnDecompressOrFixBootRate(UINT nMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled);
 		//LRESULT OnActive(UINT nMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled);
@@ -136,6 +139,8 @@ namespace Metro{
 		MetroPushButton m_Operate;
 		MetroLabel m_mtexts;
 		CProgressBarCtrl m_proge;
+		CEdit m_edit;
+		CComboBox m_combox;
 		DWORD iseThreadID;
 		std::wstring MTNotices;
 		std::wstring JobStatusRate;
