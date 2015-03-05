@@ -11,27 +11,27 @@
 
 namespace Metro{
 	namespace MUI{
-		typedef struct _LocaleHlp{
+		typedef struct _LocaleInfoTags{
 			std::wstring localename;
 			DWORD lcid;
-		}LocaleHlp;
+		}LocaleInfo;
+		typedef struct _LocnameBase{
+			const char *name;
+			DWORD id;
+		}LocnameBase;
 		class MUIController{
 			static std::auto_ptr<MUIController> m_pInstance;
 		protected:
 			MUIController();
 		private:
-			void GetLines();
 			DWORD UILcId;
 			std::wstring ifilename;
-			int lines;
-			std::wifstream langfile;
-			std::vector<std::wstring> m_line;
+
 		public:
 			static MUIController* Instance();
-			std::map<std::wstring, std::wstring> m_langmap;
-			std::wstring QueryValueString(std::wstring key);
-			DWORD ApplyChangeValue(std::wstring key, std::wstring value);
-			bool MUIInitLangFileFromatParse();
+			std::map<std::wstring, std::wstring> m_langTree;
+			std::wstring atString(std::wstring key,std::wstring value);
+			bool MUIResourceLoader();
 			DWORD Init();
 		};
 	}

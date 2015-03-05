@@ -23,7 +23,7 @@
 #pragma comment(lib,"usp10.lib")
 
 NAMESPACEMETRO
-extern MUI::LocaleHlp localehlp;
+extern MUI::LocaleInfo localeinfo;
 TCHAR SizeStr[120] = { L" 0 Byte\0" };
 const WCHAR Notes[] = { L"Irreversible behavior(Format),Task running don't remove or insert the device\nSupport: Windows 7 or Later And Corresponding Server OS" };
 static Decompress::SupervisorData SpData = {L"null",L"null",0};
@@ -266,7 +266,7 @@ dwExit(0)
 	else{
 		windowTitle = L"Metro USB Drives Boot Manager";
 	}
-	if (localehlp.lcid == 2052)
+	if (localeinfo.lcid == 2052)
 	{
 		FontTabel = 1;
 	}
@@ -1022,6 +1022,7 @@ HRESULT MetroWindow::CreateDeviceResources()
 void MetroWindow::DiscardDeviceResources()
 {
 	SafeRelease(&m_pRenderTarget);
+	SafeRelease(&m_TitleClinetBrush);
 	SafeRelease(&m_pMinButtonActiveBrush);
 	SafeRelease(&m_pMetroButtonNsBrush);
 	SafeRelease(&m_pMetroButtonLsBrush);
@@ -1047,7 +1048,7 @@ HRESULT MetroWindow::OnRender()
 		DWRITE_FONT_STYLE_NORMAL,
 		DWRITE_FONT_STRETCH_NORMAL,
 		13.0f * 96.0f / 72.0f,
-		localehlp.localename.c_str(),
+		localeinfo.localename.c_str(),
 		&m_pITextFormatTitle
 		);
 	 //m_pITextFormatContent
@@ -1058,7 +1059,7 @@ HRESULT MetroWindow::OnRender()
 		DWRITE_FONT_STYLE_NORMAL,
 		DWRITE_FONT_STRETCH_NORMAL,
 		12.0f * 96.0f / 72.0f,
-		localehlp.localename.c_str(),
+		localeinfo.localename.c_str(),
 		&m_pITextFormatContent
 		);
 	if (SUCCEEDED(hr))

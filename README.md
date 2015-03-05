@@ -32,5 +32,5 @@ Good Luck!
 **Create Faild**
 ![FAILD](https://raw.githubusercontent.com/forcegroup/iBurnMgr/master/ImageShow/Image2.JPG)
 
-***NewUI*
+**NewUI**
 ![NewUI](https://raw.githubusercontent.com/forcegroup/iBurnMgr/master/ImageShow/NewUI.PNG)

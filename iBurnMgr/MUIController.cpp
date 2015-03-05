@@ -4,10 +4,27 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <locale>
+#include <fstream>
 
 NAMESPACEMETRO
-MUI::LocaleHlp localehlp = {L"0",0};
+MUI::LocaleInfo localeinfo = {L"0",0};
 namespace MUI{
+
+	static LocnameBase localbase[] = {
+		{ "chs", 2052 },
+		{"cht", 1028},
+		{"enu",1033}
+	};
+	const char *getLocaleName(DWORD lcid)
+	{
+		for (auto i : localbase)
+		{
+			if (i.id == lcid)
+				return i.name;
+		}
+		return "english";
+	}
+
 	std::auto_ptr<MUIController> MUIController::m_pInstance(NULL);
 	MUIController::MUIController()
 	{
@@ -26,10 +43,10 @@ namespace MUI{
 		initfile+=L".ini";
 		if (_waccess_s(initfile.c_str(), 4) == 0){
 			int x=GetPrivateProfileStringW(L"iBurnMgr.Config", L"LocaleName", NULL, szLocal, LOCALE_NAME_MAX_LENGTH, initfile.c_str());
-			localehlp.lcid = GetPrivateProfileIntW(L"iBurnMgr.Config", L"LCID", NULL, initfile.c_str());
+			localeinfo.lcid = GetPrivateProfileIntW(L"iBurnMgr.Config", L"LCID", NULL, initfile.c_str());
 		}
-		if (localehlp.lcid == 0)
-			localehlp.lcid = UILcId;
+		if (localeinfo.lcid == 0)
+			localeinfo.lcid = UILcId;
 		if (!wcslen(szLocal))
 		{
 			if (LCIDToLocaleName(UILcId, szLocal, LOCALE_NAME_MAX_LENGTH, 0) == 0)
@@ -37,7 +54,7 @@ namespace MUI{
 				eror = GetLastError();
 			}
 		}
-		localehlp.localename = szLocal;
+		localeinfo.localename = szLocal;
 		(wcsrchr(szlangFile, L'\\'))[1]=0;
 		langFile = szlangFile;
 		langFile += szLocal;
@@ -46,13 +63,17 @@ namespace MUI{
 		{
 			langFile = szlangFile;
 			langFile+=L"en.lang";
-			localehlp.localename = L"en-US";
+			localeinfo.localename = L"en-US";
 		}
 		this->ifilename = langFile;
-		if (!MUIInitLangFileFromatParse())
+		if (!MUIResourceLoader())
 		{
 			return 1;
 		}
+		//for (auto x : m_langTree)
+		//{
+		//	MessageBoxW(nullptr, x.second.c_str(), x.first.c_str(), MB_OK);
+		//}
 		return 0;
 	}
 	MUIController* MUIController::Instance()
@@ -63,57 +84,41 @@ namespace MUI{
 		}
 		return m_pInstance.get();
 	}
-
-	bool MUIController::MUIInitLangFileFromatParse()
+	std::wstring MUIController::atString(std::wstring key, std::wstring value)
 	{
-		m_line = std::vector<std::wstring>();
-		langfile = std::wifstream(ifilename.c_str(), std::ios::binary);
-		std::wstring str;
-		wchar_t szLine[4069] = { 0 };
-		langfile.imbue(std::locale(""));
-		//wchar_t ch;
-		//size_t index = 2;
-		//int line=0;
-		//while (!langfile.eof())
-		//{
-		//	langfile.seekg(1, std::ios::beg);
-		//	wchar_t ch;
-		//	langfile.read(&ch,1);
-		//	if (ch = 0x000D)
-		//	{
-		//		MessageBox(nullptr, str.c_str(), L"0", MB_OK);
-		//		line++;
-		//		str.clear();
-		//	}
-		//	else{
-		//		index += 2;
-		//		str.append(ch, 1);
-		//	}
-		//}
-
-		while (std::getline(langfile, str))
+		auto iter = m_langTree.find(key);
+		if (iter == m_langTree.end())
+			return value;
+		return m_langTree.at(key);
+	}
+	bool MUIController::MUIResourceLoader()
+	{
+		wchar_t szBuffer[4096];
+		std::wstring newLineStr = L"\\n";
+		std::wstring newLine = L"\n";
+		std::wstring bufferString;
+		std::wifstream file(this->ifilename);
+		file.imbue(std::locale(getLocaleName(UILcId)));
+		if (!file.is_open())
+			return false;
+		while (!file.eof())
 		{
-			if (!str.find(L"#") == 0 && !str.find(L";") == 0)
+			file.getline(szBuffer,4096);
+			bufferString = szBuffer;
+			if (bufferString[0] != '#'&&bufferString[0] != '/'&&bufferString[0]!='[')
 			{
-				std::string::size_type npos = str.find(L"\\n");
-				if (npos < str.length())
+				auto np = bufferString.find('=');
+				if (np != bufferString.npos)
 				{
-					str.replace(npos, 2, L"\n");
+					std::wstring value = bufferString.substr(np + 1);
+					size_t index=0;
+					while ((index = value.find(L"\\n")) != value.npos)
+					{
+						value.replace(index, 2, L"\n");
+					}
+					m_langTree.insert(std::pair<std::wstring, std::wstring>(bufferString.substr(0, np),value));
 				}
-				//MessageBox(NULL, str.c_str(), L"zr", MB_OK);
-				m_line.push_back(str);
 			}
-			}
-		this->langfile.close();
-		this->m_langmap =std::map<std::wstring, std::wstring>();
-		std::vector<std::wstring>::iterator it = m_line.begin();
-		std::wstring s1, s2;
-		while (it != this->m_line.end())
-		{
-			s1 = it->substr(0, it->find(L"="));
-			s2 = it->substr(it->find(L"=") + 1, it->size() - 1);
-			this->m_langmap.insert(std::map<std::wstring, std::wstring>::value_type(s1, s2));
-			it++;
 		}
 		return true;
 	}		

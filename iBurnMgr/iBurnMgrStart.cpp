@@ -16,6 +16,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance,
 {
 	UNREFERENCED_PARAMETER(hPrevInstance);
 	UNREFERENCED_PARAMETER(lpCmdLine);
+
 	muiController->Init();
 	_Module.Init(nullptr, hInstance);
 	MSG msg;
