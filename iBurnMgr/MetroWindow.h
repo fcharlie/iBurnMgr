@@ -42,22 +42,19 @@ namespace Metro{
 		DWORD FontTabel;
 		ID2D1Factory* m_pDirect2dFactory;
 		ID2D1HwndRenderTarget* m_pRenderTarget;
-		ID2D1SolidColorBrush*m_NoClinetBrush;
-		ID2D1SolidColorBrush* m_pDarkBlueBindBrush;
+		ID2D1SolidColorBrush* m_TitleClinetBrush;
+		ID2D1SolidColorBrush* m_pMinButtonActiveBrush;
 		ID2D1SolidColorBrush* m_pMetroButtonNsBrush;
 		ID2D1SolidColorBrush* m_pMetroButtonLsBrush;
-		ID2D1SolidColorBrush* m_pStatusAreaBrush;
-		ID2D1SolidColorBrush* m_pLightRedBrush;
+		ID2D1SolidColorBrush* m_pUITextBrush;
+		ID2D1SolidColorBrush* m_pCloseButtonClickBrush;
 		ID2D1SolidColorBrush* m_pLightWhiteBrush;
-		ID2D1SolidColorBrush* m_pBackgroundLightBrush;
-		ID2D1SolidColorBrush* m_pContentAreaBrush;
 		ID2D1SolidColorBrush* m_pControlTextBrush;
-		ID2D1SolidColorBrush* m_pTextAreaBrush;
 
-		IWICImagingFactory*		pWICFactory;
-		ID2D1Bitmap* pBitmap;
-		IDWriteTextFormat* m_pITextFormat;
-		IDWriteTextFormat* m_pITextFormatCtl;
+		IWICImagingFactory*		m_pWICFactory;
+		ID2D1Bitmap* m_pBitmap;
+		IDWriteTextFormat* m_pITextFormatTitle;
+		IDWriteTextFormat* m_pITextFormatContent;
 		IDWriteFactory* m_pIDWriteFactory;
 		IDWriteTypography*    m_pDWriteTypography;
 		HRESULT CreateDeviceIndependentResources();
@@ -146,6 +143,7 @@ namespace Metro{
 		std::wstring JobStatusRate;
 		std::wstring ProcessInfo;
 		std::wstring windowTitle;
+		std::wstring copyright;
 	};
 }
 #endif

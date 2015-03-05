@@ -240,22 +240,19 @@ HRESULT LoadResourceBitmap(
 
 MetroWindow::MetroWindow() :m_pDirect2dFactory(NULL),
 m_pRenderTarget(NULL),
-m_NoClinetBrush(NULL),
-m_pDarkBlueBindBrush(NULL),
+m_TitleClinetBrush(NULL),
+m_pMinButtonActiveBrush(NULL),
 m_pMetroButtonNsBrush(NULL),
 m_pMetroButtonLsBrush(NULL),
-m_pBackgroundLightBrush(NULL),
-m_pStatusAreaBrush(NULL),
+m_pUITextBrush(NULL),
 m_pLightWhiteBrush(NULL),
 m_pControlTextBrush(NULL),
 m_pDWriteTypography(NULL),
-m_pLightRedBrush(NULL),
-m_pContentAreaBrush(NULL),
-m_pTextAreaBrush(NULL),
-pWICFactory(NULL),
-pBitmap(NULL),
-m_pITextFormat(NULL),
-m_pITextFormatCtl(NULL),
+m_pCloseButtonClickBrush(NULL),
+m_pWICFactory(NULL),
+m_pBitmap(NULL),
+m_pITextFormatTitle(NULL),
+m_pITextFormatContent(NULL),
 m_pIDWriteFactory(NULL),
 IsInvalid(false),
 _bMouseTrack(TRUE),
@@ -279,37 +276,32 @@ dwExit(0)
 	MTNotices = L"Notices Center:";
 	JobStatusRate = L"Task not start";
 	ProcessInfo = L"Manager Task Rate:";
-
+	copyright = L"Copyright \xA9 2015 The ForceStudio.";
 	m_mbFind.bStatus = false;
-	m_mbFind.caption = L"Find Image...";
+	m_mbFind.caption = L"Open Image...";
 	m_FixBoot.bStatus = false;
 	m_FixBoot.caption = L"Fix Boot";
 	m_Operate.bStatus = false;
 	//m_Operate.caption =muiController->m_langmap[L"BMake"];
-	m_Operate.caption = L"Began Making";
+	m_Operate.caption = L"Expand Image";
 
 }
 MetroWindow::~MetroWindow()
 {
 	SafeRelease(&m_pDirect2dFactory);
 	SafeRelease(&m_pRenderTarget);
-	SafeRelease(&m_NoClinetBrush);
-	SafeRelease(&m_pDarkBlueBindBrush);
+	SafeRelease(&m_TitleClinetBrush);
+	SafeRelease(&m_pMinButtonActiveBrush);
 	SafeRelease(&m_pMetroButtonNsBrush);
 	SafeRelease(&m_pMetroButtonLsBrush);
 	SafeRelease(&m_pLightWhiteBrush);
-	SafeRelease(&m_pStatusAreaBrush);
-	SafeRelease(&m_pBackgroundLightBrush);
-	SafeRelease(&m_pContentAreaBrush);
-	SafeRelease(&m_pLightRedBrush);
-	SafeRelease(&m_pTextAreaBrush);
+	SafeRelease(&m_pUITextBrush);
+	SafeRelease(&m_pCloseButtonClickBrush);
 	SafeRelease(&m_pControlTextBrush);
-	//SafeRelease(&pBitmap);
-	//SafeRelease(&pWICFactory);
 	SafeRelease(&m_pDWriteTypography);
 	SafeRelease(&m_pIDWriteFactory);
-	SafeRelease(&m_pITextFormat);
-	SafeRelease(&m_pITextFormatCtl);
+	SafeRelease(&m_pITextFormatTitle);
+	SafeRelease(&m_pITextFormatContent);
 	
 
 
@@ -955,49 +947,42 @@ HRESULT MetroWindow::CreateDeviceResources()
 				NULL,
 				CLSCTX_INPROC_SERVER,
 				IID_IWICImagingFactory,
-				reinterpret_cast<void **>(&pWICFactory)
+				reinterpret_cast<void **>(&m_pWICFactory)
 				);
 		}
 		if (SUCCEEDED(hr))
 		{
-			hr = LoadResourceBitmap(m_pRenderTarget, pWICFactory,
+			hr = LoadResourceBitmap(m_pRenderTarget, m_pWICFactory,
 				MAKEINTRESOURCE(IDP_EMOJI_LOG),
 				L"PNG",
-				0, 0, &pBitmap);
-		}
-		if (SUCCEEDED(hr))
-		{
-			hr = m_pRenderTarget->CreateSolidColorBrush(
-				D2D1::ColorF(D2D1::ColorF::DarkTurquoise),
-				&m_pBackgroundLightBrush
-				);
+				0, 0, &m_pBitmap);
 		}
 		if (SUCCEEDED(hr))
 		{
 			hr = m_pRenderTarget->CreateSolidColorBrush(
 				D2D1::ColorF(0x3867B2),
-				&m_pDarkBlueBindBrush
+				&m_pMinButtonActiveBrush
 				);
 		}
 		if (SUCCEEDED(hr))
 		{
 			hr = m_pRenderTarget->CreateSolidColorBrush(
 				D2D1::ColorF(D2D1::ColorF::Gainsboro),
-				&m_NoClinetBrush
+				&m_TitleClinetBrush
 				);
 		}
 		if (SUCCEEDED(hr))
 		{
 			hr = m_pRenderTarget->CreateSolidColorBrush(
 				D2D1::ColorF(D2D1::ColorF::Firebrick),
-				&m_pLightRedBrush
+				&m_pCloseButtonClickBrush
 				);
 		}
 		if (SUCCEEDED(hr))
 		{
 			hr = m_pRenderTarget->CreateSolidColorBrush(
-				D2D1::ColorF(D2D1::ColorF::PaleTurquoise),
-				&m_pStatusAreaBrush
+				D2D1::ColorF(D2D1::ColorF::Silver),
+				&m_pUITextBrush
 				);
 		}
 		if (SUCCEEDED(hr))
@@ -1028,19 +1013,6 @@ HRESULT MetroWindow::CreateDeviceResources()
 				&m_pControlTextBrush
 				);
 		}
-		if (SUCCEEDED(hr))
-		{
-			hr = m_pRenderTarget->CreateSolidColorBrush(
-				D2D1::ColorF(D2D1::ColorF::Silver),
-				&m_pContentAreaBrush
-				);
-		}
-		if (SUCCEEDED(hr))
-		{
-			hr = m_pRenderTarget->CreateSolidColorBrush(
-				D2D1::ColorF(D2D1::ColorF::LimeGreen),
-				&m_pTextAreaBrush);
-		}
 
 	}
 
@@ -1050,15 +1022,12 @@ HRESULT MetroWindow::CreateDeviceResources()
 void MetroWindow::DiscardDeviceResources()
 {
 	SafeRelease(&m_pRenderTarget);
-	SafeRelease(&m_pDarkBlueBindBrush);
+	SafeRelease(&m_pMinButtonActiveBrush);
 	SafeRelease(&m_pMetroButtonNsBrush);
 	SafeRelease(&m_pMetroButtonLsBrush);
 	SafeRelease(&m_pLightWhiteBrush);
-	SafeRelease(&m_pStatusAreaBrush);
-	SafeRelease(&m_pBackgroundLightBrush);
-	SafeRelease(&m_pContentAreaBrush);
-	SafeRelease(&m_pLightRedBrush);
-	SafeRelease(&m_pTextAreaBrush);
+	SafeRelease(&m_pUITextBrush);
+	SafeRelease(&m_pCloseButtonClickBrush);
 	SafeRelease(&m_pControlTextBrush);
 }
 HRESULT MetroWindow::OnRender()
@@ -1079,9 +1048,9 @@ HRESULT MetroWindow::OnRender()
 		DWRITE_FONT_STRETCH_NORMAL,
 		13.0f * 96.0f / 72.0f,
 		localehlp.localename.c_str(),
-		&m_pITextFormat
+		&m_pITextFormatTitle
 		);
-	 //m_pITextFormatCtl
+	 //m_pITextFormatContent
 	m_pIDWriteFactory->CreateTextFormat(
 		L"Segeo UI",
 		NULL,
@@ -1090,7 +1059,7 @@ HRESULT MetroWindow::OnRender()
 		DWRITE_FONT_STRETCH_NORMAL,
 		12.0f * 96.0f / 72.0f,
 		localehlp.localename.c_str(),
-		&m_pITextFormatCtl
+		&m_pITextFormatContent
 		);
 	if (SUCCEEDED(hr))
 	{
@@ -1111,12 +1080,12 @@ HRESULT MetroWindow::OnRender()
 
 #pragma warning(disable:4244)
 #pragma warning(disable:4267)
-		m_pRenderTarget->FillRectangle(D2D1::RectF(0, 0, rtSize.width, 36),m_NoClinetBrush);
-		D2D1_SIZE_F size = pBitmap->GetSize();
+		m_pRenderTarget->FillRectangle(D2D1::RectF(0, 0, rtSize.width, 36),m_TitleClinetBrush);
+		D2D1_SIZE_F size = m_pBitmap->GetSize();
 		D2D1_POINT_2F upperLeftCorner = D2D1::Point2F(0.f, 0.f);
 
 		m_pRenderTarget->DrawBitmap(
-			pBitmap,
+			m_pBitmap,
 			D2D1::RectF(
 			upperLeftCorner.x,
 			upperLeftCorner.y,
@@ -1124,32 +1093,28 @@ HRESULT MetroWindow::OnRender()
 			upperLeftCorner.y + size.height)
 			);
 
-		//m_pRenderTarget->FillRectangle(D2D1::RectF(xArea.left, xArea.top, xArea.right, xArea.bottom), m_pContentAreaBrush);
-		//m_pRenderTarget->FillRectangle(D2D1::RectF(xArea.left, xArea.bottom + 10.0f, xArea.right / 2 - 60.f, xArea.bottom + 200.0f), m_pBackgroundLightBrush);
-		//m_pRenderTarget->FillRectangle(D2D1::RectF(xArea.right / 2 - 50.f, xArea.bottom + 10.0f, xArea.right, xArea.bottom + 200.0f), m_pStatusAreaBrush);
-		//m_pRenderTarget->FillRectangle(D2D1::RectF(120, 130, 680, 157), m_pTextAreaBrush);
 		//// Text Draw
-		m_pRenderTarget->DrawTextW(windowTitle.c_str(), windowTitle.length(), m_pITextFormat, D2D1::RectF(35, 5, 600, 25), m_pControlTextBrush, D2D1_DRAW_TEXT_OPTIONS_NONE, DWRITE_MEASURING_MODE_NATURAL);
+		m_pRenderTarget->DrawTextW(windowTitle.c_str(), windowTitle.length(), m_pITextFormatTitle, D2D1::RectF(35, 5, 600, 25), m_pControlTextBrush, D2D1_DRAW_TEXT_OPTIONS_NONE, DWRITE_MEASURING_MODE_NATURAL);
 
-		//m_pITextFormatCtl->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_TRAILING);
-		m_pRenderTarget->DrawTextW(L"USB Drives:", 11, m_pITextFormatCtl, D2D1::RectF(30, 60, 110, 85), m_pControlTextBrush, D2D1_DRAW_TEXT_OPTIONS_NONE, DWRITE_MEASURING_MODE_NATURAL);
-		m_pRenderTarget->DrawTextW(L"Image File:", 12, m_pITextFormatCtl, D2D1::RectF(30, 95, 110, 122), m_pControlTextBrush, D2D1_DRAW_TEXT_OPTIONS_NONE, DWRITE_MEASURING_MODE_NATURAL);
-		m_pRenderTarget->DrawTextW(L"Image Size:", 12, m_pITextFormatCtl, D2D1::RectF(30, 130, 110, 157), m_pControlTextBrush, D2D1_DRAW_TEXT_OPTIONS_NONE, DWRITE_MEASURING_MODE_NATURAL);
-		m_pRenderTarget->DrawTextW(L"Notices:", 8, m_pITextFormatCtl, D2D1::RectF(30, 167, 110, 221), m_pControlTextBrush, D2D1_DRAW_TEXT_OPTIONS_NONE, DWRITE_MEASURING_MODE_NATURAL);
-
-		m_pITextFormatCtl->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_JUSTIFIED);
-		m_pRenderTarget->DrawTextW(ProcessInfo.c_str(), ProcessInfo.length(), m_pITextFormatCtl, D2D1::RectF(320.0f, xArea.bottom + 30.0f, xArea.right, xArea.bottom + 200.0f), m_pControlTextBrush, D2D1_DRAW_TEXT_OPTIONS_NONE, DWRITE_MEASURING_MODE_NATURAL);
-		m_pRenderTarget->DrawTextW(JobStatusRate.c_str(), JobStatusRate.length(), m_pITextFormatCtl, D2D1::RectF(320.0f, xArea.bottom + 90.0f, xArea.right, xArea.bottom + 260.0f), m_pControlTextBrush, D2D1_DRAW_TEXT_OPTIONS_NONE, DWRITE_MEASURING_MODE_NATURAL);
-		m_pRenderTarget->DrawTextW(MTNotices.c_str(), MTNotices.length(), m_pITextFormatCtl, D2D1::RectF(xArea.left + 10.f, xArea.bottom + 20.0f, xArea.right / 2 - 60.f, xArea.bottom + 200.0f), m_pControlTextBrush, D2D1_DRAW_TEXT_OPTIONS_NONE, DWRITE_MEASURING_MODE_NATURAL);
-		m_pRenderTarget->DrawTextW(Notes, wcslen(Notes), m_pITextFormatCtl, D2D1::RectF(120, 167, 690, 221), m_pControlTextBrush, D2D1_DRAW_TEXT_OPTIONS_NONE, DWRITE_MEASURING_MODE_NATURAL);
-		m_pRenderTarget->DrawTextW(SizeStr, wcslen(SizeStr), m_pITextFormatCtl, D2D1::RectF(120, 130, 680, 157), m_pControlTextBrush, D2D1_DRAW_TEXT_OPTIONS_NONE, DWRITE_MEASURING_MODE_NATURAL);
+		//m_pITextFormatContent->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_TRAILING);
+		m_pRenderTarget->DrawTextW(L"USB Drives:", 11, m_pITextFormatContent, D2D1::RectF(30, 60, 110, 85), m_pUITextBrush, D2D1_DRAW_TEXT_OPTIONS_NONE, DWRITE_MEASURING_MODE_NATURAL);
+		m_pRenderTarget->DrawTextW(L"Image File:", 12, m_pITextFormatContent, D2D1::RectF(30, 95, 110, 122), m_pUITextBrush, D2D1_DRAW_TEXT_OPTIONS_NONE, DWRITE_MEASURING_MODE_NATURAL);
+		m_pRenderTarget->DrawTextW(L"Image Size:", 12, m_pITextFormatContent, D2D1::RectF(30, 130, 110, 157), m_pUITextBrush, D2D1_DRAW_TEXT_OPTIONS_NONE, DWRITE_MEASURING_MODE_NATURAL);
+		m_pRenderTarget->DrawTextW(L"Notices:", 8, m_pITextFormatContent, D2D1::RectF(30, 167, 110, 221), m_pUITextBrush, D2D1_DRAW_TEXT_OPTIONS_NONE, DWRITE_MEASURING_MODE_NATURAL);
+		m_pRenderTarget->DrawTextW(copyright.c_str(), copyright.size(), m_pITextFormatContent, D2D1::RectF(30, m_Operate.place.top, 400, m_Operate.place.bottom), m_pUITextBrush, D2D1_DRAW_TEXT_OPTIONS_NONE, DWRITE_MEASURING_MODE_NATURAL);
+		m_pITextFormatContent->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_JUSTIFIED);
+		m_pRenderTarget->DrawTextW(ProcessInfo.c_str(), ProcessInfo.length(), m_pITextFormatContent, D2D1::RectF(320.0f, xArea.bottom + 30.0f, xArea.right, xArea.bottom + 200.0f), m_pUITextBrush, D2D1_DRAW_TEXT_OPTIONS_NONE, DWRITE_MEASURING_MODE_NATURAL);
+		m_pRenderTarget->DrawTextW(JobStatusRate.c_str(), JobStatusRate.length(), m_pITextFormatContent, D2D1::RectF(320.0f, xArea.bottom + 90.0f, xArea.right, xArea.bottom + 260.0f), m_pUITextBrush, D2D1_DRAW_TEXT_OPTIONS_NONE, DWRITE_MEASURING_MODE_NATURAL);
+		m_pRenderTarget->DrawTextW(MTNotices.c_str(), MTNotices.length(), m_pITextFormatContent, D2D1::RectF(xArea.left + 10.f, xArea.bottom + 20.0f, xArea.right / 2 - 60.f, xArea.bottom + 200.0f), m_pUITextBrush, D2D1_DRAW_TEXT_OPTIONS_NONE, DWRITE_MEASURING_MODE_NATURAL);
+		m_pRenderTarget->DrawTextW(Notes, wcslen(Notes), m_pITextFormatContent, D2D1::RectF(120, 167, 690, 221), m_pUITextBrush, D2D1_DRAW_TEXT_OPTIONS_NONE, DWRITE_MEASURING_MODE_NATURAL);
+		m_pRenderTarget->DrawTextW(SizeStr, wcslen(SizeStr), m_pITextFormatContent, D2D1::RectF(120, 130, 680, 157), m_pUITextBrush, D2D1_DRAW_TEXT_OPTIONS_NONE, DWRITE_MEASURING_MODE_NATURAL);
 		/////////////////
 		/// Button Draw
-		m_pITextFormatCtl->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_CENTER);
-		m_pITextFormat->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_CENTER);
+		m_pITextFormatContent->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_CENTER);
+		m_pITextFormatTitle->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_CENTER);
 		//Exit
 		if (pt.x >= m_rexit.place.left&&pt.x <= m_rexit.place.right&&pt.y >= m_rexit.place.top&&pt.y <= m_rexit.place.bottom){
-			m_pRenderTarget->FillRectangle(D2D1::RectF(m_rexit.place.left, m_rexit.place.top, m_rexit.place.right + 1, m_rexit.place.bottom), m_pLightRedBrush);
+			m_pRenderTarget->FillRectangle(D2D1::RectF(m_rexit.place.left, m_rexit.place.top, m_rexit.place.right + 1, m_rexit.place.bottom), m_pCloseButtonClickBrush);
 			m_pRenderTarget->DrawLine(D2D1::Point2F(m_rexit.place.left + 17.5f, m_rexit.place.top + 6.5f), D2D1::Point2F(m_rexit.place.right - 17.5f, m_rexit.place.bottom - 6.5f), m_pLightWhiteBrush, 1.0f);
 			m_pRenderTarget->DrawLine(D2D1::Point2F(m_rexit.place.left + 17.5f, m_rexit.place.bottom - 6.5f), D2D1::Point2F(m_rexit.place.right - 17.5f, m_rexit.place.top + 6.5f), m_pLightWhiteBrush, 1.0f);
 		}
@@ -1160,7 +1125,7 @@ HRESULT MetroWindow::OnRender()
 		//Min
 		if (pt.x >= m_rmin.place.left&&pt.x < m_rmin.place.right&&pt.y >= m_rmin.place.top&&pt.y <= m_rmin.place.bottom)
 		{
-			m_pRenderTarget->FillRectangle(D2D1::RectF(m_rmin.place.left, m_rmin.place.top, m_rmin.place.right, m_rmin.place.bottom), m_pDarkBlueBindBrush);
+			m_pRenderTarget->FillRectangle(D2D1::RectF(m_rmin.place.left, m_rmin.place.top, m_rmin.place.right, m_rmin.place.bottom), m_pMinButtonActiveBrush);
 			m_pRenderTarget->DrawLine(D2D1::Point2F(m_rmin.place.left + 17, m_rmin.place.top + 15), D2D1::Point2F(m_rmin.place.right - 17, m_rmin.place.top + 15), m_pLightWhiteBrush, 1.2f);
 		}
 		else{
@@ -1174,7 +1139,7 @@ HRESULT MetroWindow::OnRender()
 		else{
 			m_pRenderTarget->FillRectangle(D2D1::RectF(m_mbFind.place.left, m_mbFind.place.top, m_mbFind.place.right, m_mbFind.place.bottom), m_pMetroButtonNsBrush);
 		}
-		m_pRenderTarget->DrawTextW(m_mbFind.caption.c_str(), m_mbFind.caption.length(), m_pITextFormatCtl, D2D1::RectF(m_mbFind.place.left, m_mbFind.place.top, m_mbFind.place.right, m_mbFind.place.bottom), m_pControlTextBrush, D2D1_DRAW_TEXT_OPTIONS_NONE, DWRITE_MEASURING_MODE_NATURAL);
+		m_pRenderTarget->DrawTextW(m_mbFind.caption.c_str(), m_mbFind.caption.length(), m_pITextFormatContent, D2D1::RectF(m_mbFind.place.left, m_mbFind.place.top, m_mbFind.place.right, m_mbFind.place.bottom), m_pControlTextBrush, D2D1_DRAW_TEXT_OPTIONS_NONE, DWRITE_MEASURING_MODE_NATURAL);
 		//FixBoot
 		if (pt.x >= m_FixBoot.place.left&&pt.x <= m_FixBoot.place.right&&pt.y >= m_FixBoot.place.top&&pt.y <= m_FixBoot.place.bottom)
 		{
@@ -1183,7 +1148,7 @@ HRESULT MetroWindow::OnRender()
 		else{
 			m_pRenderTarget->FillRectangle(D2D1::RectF(m_FixBoot.place.left, m_FixBoot.place.top, m_FixBoot.place.right, m_FixBoot.place.bottom), m_pMetroButtonNsBrush);
 		}
-		m_pRenderTarget->DrawTextW(m_FixBoot.caption.c_str(), m_FixBoot.caption.length(), m_pITextFormatCtl, D2D1::RectF(m_FixBoot.place.left, m_FixBoot.place.top, m_FixBoot.place.right, m_FixBoot.place.bottom), m_pControlTextBrush, D2D1_DRAW_TEXT_OPTIONS_NONE, DWRITE_MEASURING_MODE_NATURAL);
+		m_pRenderTarget->DrawTextW(m_FixBoot.caption.c_str(), m_FixBoot.caption.length(), m_pITextFormatContent, D2D1::RectF(m_FixBoot.place.left, m_FixBoot.place.top, m_FixBoot.place.right, m_FixBoot.place.bottom), m_pControlTextBrush, D2D1_DRAW_TEXT_OPTIONS_NONE, DWRITE_MEASURING_MODE_NATURAL);
 		//Operate
 		if (pt.x >= m_Operate.place.left&&pt.x <= m_Operate.place.right&&pt.y >= m_Operate.place.top&&pt.y <= m_Operate.place.bottom)
 		{
@@ -1192,7 +1157,8 @@ HRESULT MetroWindow::OnRender()
 		else{
 			m_pRenderTarget->FillRectangle(D2D1::RectF(m_Operate.place.left, m_Operate.place.top, m_Operate.place.right, m_Operate.place.bottom), m_pMetroButtonNsBrush);
 		}
-		m_pRenderTarget->DrawTextW(m_Operate.caption.c_str(), m_Operate.caption.length(), m_pITextFormatCtl, D2D1::RectF(m_Operate.place.left, m_Operate.place.top, m_Operate.place.right, m_Operate.place.bottom), m_pControlTextBrush, D2D1_DRAW_TEXT_OPTIONS_NONE, DWRITE_MEASURING_MODE_NATURAL);
+		m_pRenderTarget->DrawTextW(m_Operate.caption.c_str(), m_Operate.caption.length(), m_pITextFormatContent, D2D1::RectF(m_Operate.place.left, m_Operate.place.top, m_Operate.place.right, m_Operate.place.bottom), m_pControlTextBrush, D2D1_DRAW_TEXT_OPTIONS_NONE, DWRITE_MEASURING_MODE_NATURAL);
+		
 		////
 #pragma warning(default:4244)
 #pragma warning(default:4267)	
