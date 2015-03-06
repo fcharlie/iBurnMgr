@@ -139,6 +139,11 @@ namespace Metro{
 		CEdit m_edit;
 		CComboBox m_combox;
 		DWORD iseThreadID;
+		std::wstring USBdrive;
+		std::wstring ImageFile;
+		std::wstring ImageSize;
+		std::wstring Description;
+		std::wstring normalFont;
 		std::wstring MTNotices;
 		std::wstring JobStatusRate;
 		std::wstring ProcessInfo;

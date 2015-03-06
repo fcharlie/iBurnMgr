@@ -9,7 +9,7 @@
 NAMESPACEMETRO
 MUI::LocaleInfo localeinfo = {L"0",0};
 namespace MUI{
-
+	MUIController muiController;
 	static LocnameBase localbase[] = {
 		{ "chs", 2052 },
 		{"cht", 1028},
@@ -25,7 +25,6 @@ namespace MUI{
 		return "english";
 	}
 
-	std::auto_ptr<MUIController> MUIController::m_pInstance(NULL);
 	MUIController::MUIController()
 	{
 
@@ -49,7 +48,7 @@ namespace MUI{
 			localeinfo.lcid = UILcId;
 		if (!wcslen(szLocal))
 		{
-			if (LCIDToLocaleName(UILcId, szLocal, LOCALE_NAME_MAX_LENGTH, 0) == 0)
+			if (LCIDToLocaleName(UILcId, szLocal, LOCALE_NAME_MAX_LENGTH, LOCALE_ALLOW_NEUTRAL_NAMES) == 0)
 			{
 				eror = GetLastError();
 			}
@@ -76,20 +75,18 @@ namespace MUI{
 		//}
 		return 0;
 	}
-	MUIController* MUIController::Instance()
-	{
-		if (!m_pInstance.get())
-		{
-			m_pInstance = std::auto_ptr < MUIController>(new MUIController());
-		}
-		return m_pInstance.get();
-	}
-	std::wstring MUIController::atString(std::wstring key, std::wstring value)
+	std::wstring MUIController::atString(std::wstring &key, std::wstring &value)
 	{
 		auto iter = m_langTree.find(key);
 		if (iter == m_langTree.end())
 			return value;
 		return m_langTree.at(key);
+	}
+	std::wstring MUIController::atString(const wchar_t *key, const wchar_t *value)
+	{
+		std::wstring k = key;
+		std::wstring v = value;
+		return atString(k, v);
 	}
 	bool MUIController::MUIResourceLoader()
 	{

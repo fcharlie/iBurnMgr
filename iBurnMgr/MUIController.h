@@ -20,23 +20,20 @@ namespace Metro{
 			DWORD id;
 		}LocnameBase;
 		class MUIController{
-			static std::auto_ptr<MUIController> m_pInstance;
-		protected:
-			MUIController();
 		private:
 			DWORD UILcId;
 			std::wstring ifilename;
-
-		public:
-			static MUIController* Instance();
 			std::map<std::wstring, std::wstring> m_langTree;
-			std::wstring atString(std::wstring key,std::wstring value);
+		public:
+			MUIController();
+			std::wstring atString(std::wstring &key,std::wstring &value);
+			std::wstring atString(const wchar_t *key, const wchar_t *value);
 			bool MUIResourceLoader();
 			DWORD Init();
 		};
+		extern MUIController muiController;
 	}
 }
-
 
 
 #endif

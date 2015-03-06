@@ -6,7 +6,7 @@
 
 //#include "APIController.h"
 CAppModule _Module;
-Metro::MUI::MUIController* muiController=Metro::MUI::MUIController::Instance();
+
 
 
 int WINAPI wWinMain(_In_ HINSTANCE hInstance,
@@ -17,7 +17,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance,
 	UNREFERENCED_PARAMETER(hPrevInstance);
 	UNREFERENCED_PARAMETER(lpCmdLine);
 
-	muiController->Init();
+	Metro::MUI::muiController.Init();
 	_Module.Init(nullptr, hInstance);
 	MSG msg;
 	::InitCommonControls();

@@ -25,7 +25,8 @@
 NAMESPACEMETRO
 extern MUI::LocaleInfo localeinfo;
 TCHAR SizeStr[120] = { L" 0 Byte\0" };
-const WCHAR Notes[] = { L"Irreversible behavior(Format),Task running don't remove or insert the device\nSupport: Windows 7 or Later And Corresponding Server OS" };
+#define DEFAULT_NOTES L"Irreversible behavior(Format),Task running don't remove or insert the device\nSupport: Windows 7 or Later And Corresponding Server OS"
+std::wstring Notes;
 static Decompress::SupervisorData SpData = {L"null",L"null",0};
 static ResolveSupervisor::ResolveData reData = { L"null", NULL };
 const UINT METRO_MULTITHREAD_MSG = RegisterWindowMessage(L"METRO_MULTITHREAD_MSG");
@@ -261,11 +262,13 @@ dwExit(0)
 {
 	if (IsUserAnAdmin())
 	{
-		windowTitle = L"Metro USB Drives Boot Manager [Administrator]";
+		windowTitle = L"Metro USB Drives Boot Manager [";
+		windowTitle += MUI::muiController.atString(L"Adm", L"Administrator") + L"]";
 	}
 	else{
 		windowTitle = L"Metro USB Drives Boot Manager";
 	}
+	Notes =MUI::muiController.atString(L"NoticeInfo", DEFAULT_NOTES);
 	if (localeinfo.lcid == 2052)
 	{
 		FontTabel = 1;
@@ -278,13 +281,19 @@ dwExit(0)
 	ProcessInfo = L"Manager Task Rate:";
 	copyright = L"Copyright \xA9 2015 The ForceStudio.";
 	m_mbFind.bStatus = false;
-	m_mbFind.caption = L"Open Image...";
+	m_mbFind.caption =MUI::muiController.atString(L"OpenImage",L"Open Image...");
 	m_FixBoot.bStatus = false;
-	m_FixBoot.caption = L"Fix Boot";
+	m_FixBoot.caption = MUI::muiController.atString(L"Fixboot", L"Fix Boot");
 	m_Operate.bStatus = false;
 	//m_Operate.caption =muiController->m_langmap[L"BMake"];
-	m_Operate.caption = L"Expand Image";
+	m_Operate.caption = MUI::muiController.atString(L"BMake",L"Expand Image");
+	USBdrive = MUI::muiController.atString(L"USBdrive", L"USB Drives:");
+	ImageFile = MUI::muiController.atString(L"ImageFile", L"Image File:");
+	ImageSize = MUI::muiController.atString(L"ImageSize", L"Image File:");
+	Description = MUI::muiController.atString(L"Description", L"Description:");
 
+	normalFont = MUI::muiController.atString(L"NormalFont", L"Segoe UI");
+	
 }
 MetroWindow::~MetroWindow()
 {
@@ -1042,7 +1051,7 @@ HRESULT MetroWindow::OnRender()
 		__uuidof(IDWriteFactory),
 		reinterpret_cast<IUnknown**>(&m_pIDWriteFactory));
 	m_pIDWriteFactory->CreateTextFormat(
-		L"Segeo UI",
+		normalFont.c_str(),
 		NULL,
 		DWRITE_FONT_WEIGHT_NORMAL,
 		DWRITE_FONT_STYLE_NORMAL,
@@ -1053,7 +1062,7 @@ HRESULT MetroWindow::OnRender()
 		);
 	 //m_pITextFormatContent
 	m_pIDWriteFactory->CreateTextFormat(
-		L"Segeo UI",
+		normalFont.c_str(),
 		NULL,
 		DWRITE_FONT_WEIGHT_NORMAL,
 		DWRITE_FONT_STYLE_NORMAL,
@@ -1098,16 +1107,16 @@ HRESULT MetroWindow::OnRender()
 		m_pRenderTarget->DrawTextW(windowTitle.c_str(), windowTitle.length(), m_pITextFormatTitle, D2D1::RectF(35, 5, 600, 25), m_pControlTextBrush, D2D1_DRAW_TEXT_OPTIONS_NONE, DWRITE_MEASURING_MODE_NATURAL);
 
 		//m_pITextFormatContent->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_TRAILING);
-		m_pRenderTarget->DrawTextW(L"USB Drives:", 11, m_pITextFormatContent, D2D1::RectF(30, 60, 110, 85), m_pUITextBrush, D2D1_DRAW_TEXT_OPTIONS_NONE, DWRITE_MEASURING_MODE_NATURAL);
-		m_pRenderTarget->DrawTextW(L"Image File:", 12, m_pITextFormatContent, D2D1::RectF(30, 95, 110, 122), m_pUITextBrush, D2D1_DRAW_TEXT_OPTIONS_NONE, DWRITE_MEASURING_MODE_NATURAL);
-		m_pRenderTarget->DrawTextW(L"Image Size:", 12, m_pITextFormatContent, D2D1::RectF(30, 130, 110, 157), m_pUITextBrush, D2D1_DRAW_TEXT_OPTIONS_NONE, DWRITE_MEASURING_MODE_NATURAL);
-		m_pRenderTarget->DrawTextW(L"Notices:", 8, m_pITextFormatContent, D2D1::RectF(30, 167, 110, 221), m_pUITextBrush, D2D1_DRAW_TEXT_OPTIONS_NONE, DWRITE_MEASURING_MODE_NATURAL);
+		m_pRenderTarget->DrawTextW(USBdrive.c_str(), USBdrive.size(), m_pITextFormatContent, D2D1::RectF(30, 60, 110, 85), m_pUITextBrush, D2D1_DRAW_TEXT_OPTIONS_NONE, DWRITE_MEASURING_MODE_NATURAL);
+		m_pRenderTarget->DrawTextW(ImageFile.c_str(), ImageFile.size(), m_pITextFormatContent, D2D1::RectF(30, 95, 110, 122), m_pUITextBrush, D2D1_DRAW_TEXT_OPTIONS_NONE, DWRITE_MEASURING_MODE_NATURAL);
+		m_pRenderTarget->DrawTextW(ImageSize.c_str(), ImageSize.size(), m_pITextFormatContent, D2D1::RectF(30, 130, 110, 157), m_pUITextBrush, D2D1_DRAW_TEXT_OPTIONS_NONE, DWRITE_MEASURING_MODE_NATURAL);
+		m_pRenderTarget->DrawTextW(Description.c_str(), Description.size(), m_pITextFormatContent, D2D1::RectF(30, 167, 110, 221), m_pUITextBrush, D2D1_DRAW_TEXT_OPTIONS_NONE, DWRITE_MEASURING_MODE_NATURAL);
 		m_pRenderTarget->DrawTextW(copyright.c_str(), copyright.size(), m_pITextFormatContent, D2D1::RectF(30, m_Operate.place.top, 400, m_Operate.place.bottom), m_pUITextBrush, D2D1_DRAW_TEXT_OPTIONS_NONE, DWRITE_MEASURING_MODE_NATURAL);
 		m_pITextFormatContent->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_JUSTIFIED);
 		m_pRenderTarget->DrawTextW(ProcessInfo.c_str(), ProcessInfo.length(), m_pITextFormatContent, D2D1::RectF(320.0f, xArea.bottom + 30.0f, xArea.right, xArea.bottom + 200.0f), m_pUITextBrush, D2D1_DRAW_TEXT_OPTIONS_NONE, DWRITE_MEASURING_MODE_NATURAL);
 		m_pRenderTarget->DrawTextW(JobStatusRate.c_str(), JobStatusRate.length(), m_pITextFormatContent, D2D1::RectF(320.0f, xArea.bottom + 90.0f, xArea.right, xArea.bottom + 260.0f), m_pUITextBrush, D2D1_DRAW_TEXT_OPTIONS_NONE, DWRITE_MEASURING_MODE_NATURAL);
 		m_pRenderTarget->DrawTextW(MTNotices.c_str(), MTNotices.length(), m_pITextFormatContent, D2D1::RectF(xArea.left + 10.f, xArea.bottom + 20.0f, xArea.right / 2 - 60.f, xArea.bottom + 200.0f), m_pUITextBrush, D2D1_DRAW_TEXT_OPTIONS_NONE, DWRITE_MEASURING_MODE_NATURAL);
-		m_pRenderTarget->DrawTextW(Notes, wcslen(Notes), m_pITextFormatContent, D2D1::RectF(120, 167, 690, 221), m_pUITextBrush, D2D1_DRAW_TEXT_OPTIONS_NONE, DWRITE_MEASURING_MODE_NATURAL);
+		m_pRenderTarget->DrawTextW(Notes.c_str(), Notes.size(), m_pITextFormatContent, D2D1::RectF(120, 167, 690, 221), m_pUITextBrush, D2D1_DRAW_TEXT_OPTIONS_NONE, DWRITE_MEASURING_MODE_NATURAL);
 		m_pRenderTarget->DrawTextW(SizeStr, wcslen(SizeStr), m_pITextFormatContent, D2D1::RectF(120, 130, 680, 157), m_pUITextBrush, D2D1_DRAW_TEXT_OPTIONS_NONE, DWRITE_MEASURING_MODE_NATURAL);
 		/////////////////
 		/// Button Draw
