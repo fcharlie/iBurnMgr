@@ -1,7 +1,14 @@
+/*********************************************************************************************************
+* MUIController.h
+* Note: iBurnMgr MUIController
+* E-mail:<forcemz@outlook.com>
+* Data: @2015.03
+* Copyright (C) 2015 The ForceStudio All Rights Reserved.
+**********************************************************************************************************/
 #ifndef METROMUI_CONTROLLER
 #define METROMUI_CONTROLLER
 
-#define DISABLE_Now 1
+
 
 #include <string>
 #include <map>

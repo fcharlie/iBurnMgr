@@ -1,6 +1,12 @@
-﻿#include "Precompiled.h"
+﻿/*********************************************************************************************************
+* MetroWindow.cpp
+* Note: iBurnMgr MetroWindow
+* E-mail:<forcemz@outlook.com>
+* Data: @2015.03
+* Copyright (C) 2015 The ForceStudio All Rights Reserved.
+**********************************************************************************************************/
+#include "Precompiled.h"
 #include "MetroWindow.h"
-#include "ToString.h"
 #include "resource.h"
 #include "EquipmentController.h"
 

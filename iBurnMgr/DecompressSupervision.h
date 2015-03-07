@@ -1,4 +1,10 @@
-//
+/*********************************************************************************************************
+* DecompressSupervision.h
+* Note: iBurnMgr DecompressSupervision
+* E-mail:<forcemz@outlook.com>
+* Data: @2015.03
+* Copyright (C) 2015 The ForceStudio All Rights Reserved.
+**********************************************************************************************************/
 # ifndef DECOMPRESSSUPERVISION
 #define  DECOMPRESSSUPERVISION
 #include <string>

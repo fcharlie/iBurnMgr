@@ -1,4 +1,10 @@
-// explorercombo.h
+/*********************************************************************************************************
+* ExplorerCombo.h
+* Note: iBurnMgr ExplorerCombo
+* E-mail:<forcemz@outlook.com>
+* Data: @2015.03
+* Copyright (C) 2015 The ForceStudio All Rights Reserved.
+**********************************************************************************************************/
 
 #ifndef __EXPLORERCOMBO_H__
 #define __EXPLORERCOMBO_H__

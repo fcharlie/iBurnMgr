@@ -1,3 +1,10 @@
+/*********************************************************************************************************
+* MetroWindow.h
+* Note: iBurnMgr MetroWindow
+* E-mail:<forcemz@outlook.com>
+* Data: @2015.03
+* Copyright (C) 2015 The ForceStudio All Rights Reserved.
+**********************************************************************************************************/
 #ifndef METROWINDOW_H
 #define METROWINDOW_H
 #include <string>

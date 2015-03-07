@@ -1,3 +1,10 @@
+/*********************************************************************************************************
+* UniversalDiskFormatDecode.cpp
+* Note: iBurnMgr UniversalDiskFormatDecode
+* E-mail:<forcemz@outlook.com>
+* Data: @2015.03
+* Copyright (C) 2015 The ForceStudio All Rights Reserved.
+**********************************************************************************************************/
 #include "Precompiled.h"
 #include "UniversalDiskFormatModel.h"
 #include <imapi2fs.h>

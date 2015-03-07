@@ -165,7 +165,7 @@
   <ItemGroup>
     <ClCompile Include="DecompressSuprevision.cpp" />
     <ClCompile Include="DrivesTraversal.cpp" />
-    <ClCompile Include="FindImageFileManager.cpp" />
+    <ClCompile Include="FileManagerController.cpp" />
     <ClCompile Include="iBurnMgrAbout.cpp" />
     <ClCompile Include="InspectionEnvironment.cpp" />
     <ClCompile Include="MetroWindow.cpp" />
@@ -180,16 +180,13 @@
     <ClInclude Include="APIController.h" />
     <ClInclude Include="DecompressSupervision.h" />
     <ClInclude Include="EquipmentController.h" />
-    <ClInclude Include="EventHandlingModels.h" />
     <ClInclude Include="ExplorerCombo.h" />
     <ClInclude Include="InspectionEnvironment.h" />
-    <ClInclude Include="LangFileFormatController.h" />
     <ClInclude Include="MetroWindow.h" />
     <ClInclude Include="MUIController.h" />
     <ClInclude Include="Precompiled.h" />
     <ClInclude Include="ResolveBootSupervisor.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="ToString.h" />
     <ClInclude Include="UniversalDiskFormatModel.h" />
   </ItemGroup>
   <ItemGroup>

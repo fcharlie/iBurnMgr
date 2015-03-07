@@ -16,9 +16,6 @@
     <ClCompile Include="InspectionEnvironment.cpp">
       <Filter>Sources\Model</Filter>
     </ClCompile>
-    <ClCompile Include="FindImageFileManager.cpp">
-      <Filter>Sources\Controller</Filter>
-    </ClCompile>
     <ClCompile Include="DrivesTraversal.cpp">
       <Filter>Sources\Controller</Filter>
     </ClCompile>
@@ -37,6 +34,9 @@
     <ClCompile Include="MUIController.cpp">
       <Filter>Sources\Controller</Filter>
     </ClCompile>
+    <ClCompile Include="FileManagerController.cpp">
+      <Filter>Sources\Controller</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Precompiled.h">
@@ -51,9 +51,6 @@
     <ClInclude Include="MetroWindow.h">
       <Filter>Header\View</Filter>
     </ClInclude>
-    <ClInclude Include="ToString.h">
-      <Filter>Header</Filter>
-    </ClInclude>
     <ClInclude Include="DecompressSupervision.h">
       <Filter>Header\Model</Filter>
     </ClInclude>
@@ -66,9 +63,6 @@
     <ClInclude Include="EquipmentController.h">
       <Filter>Header\Controller</Filter>
     </ClInclude>
-    <ClInclude Include="EventHandlingModels.h">
-      <Filter>Header\Model</Filter>
-    </ClInclude>
     <ClInclude Include="InspectionEnvironment.h">
       <Filter>Header\Model</Filter>
     </ClInclude>
@@ -76,9 +70,6 @@
       <Filter>Header\Model</Filter>
     </ClInclude>
     <ClInclude Include="MUIController.h">
-      <Filter>Header\Controller</Filter>
-    </ClInclude>
-    <ClInclude Include="LangFileFormatController.h">
       <Filter>Header\Controller</Filter>
     </ClInclude>
   </ItemGroup>
@@ -121,13 +112,13 @@
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="App.ini" />
+    <CustomBuild Include="zh-CN.lang" />
+    <CustomBuild Include="en.lang" />
   </ItemGroup>
   <ItemGroup>
     <Manifest Include="iBurnMgr.manifest" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="en.lang" />
-    <None Include="zh-CN.lang" />
     <None Include="app.config" />
   </ItemGroup>
 </Project>
