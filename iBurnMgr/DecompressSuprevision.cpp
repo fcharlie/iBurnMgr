@@ -163,7 +163,7 @@ namespace Decompress{
 			CloseHandle(pi.hThread);
 			if(WAIT_TIMEOUT==WaitForSingleObject(pi.hProcess, INFINITE))
 			{
-				TerminateProcess(pi.hThread, 11);
+				TerminateProcess(pi.hProcess, 11);
 			}
 			GetExitCodeProcess(pi.hProcess, &dwExitCode);
 			CloseHandle(pi.hProcess);
