@@ -27,17 +27,17 @@ Good Luck!
 
 ####Screenshot
 **Format Disk Warning**
-![WARNING](https://raw.githubusercontent.com/forcegroup/iBurnMgr/master/ImageShow/Image.JPG)
+![WARNING](./ImageShow/Image.JPG)
 
 **Create BootUSB Success**
-![SUCCRSS](https://raw.githubusercontent.com/forcegroup/iBurnMgr/master/ImageShow/101.JPG)
+![SUCCRSS](./ImageShow/101.JPG)
 
 **Create Faild**
-![FAILD](https://raw.githubusercontent.com/forcegroup/iBurnMgr/master/ImageShow/Image2.JPG)
+![FAILD](./ImageShow/Image2.JPG)
 
 **NewUI**
-![NewUI](https://raw.githubusercontent.com/forcegroup/iBurnMgr/master/ImageShow/NewUI.PNG)
+![NewUI](./ImageShow/NewUI.PNG)
 
 
 **Chinese UI**
-![ChineseUI](https://raw.githubusercontent.com/forcegroup/iBurnMgr/master/ImageShow/zh-CN.PNG)
+![ChineseUI](./ImageShow/zh-CN.PNG)
