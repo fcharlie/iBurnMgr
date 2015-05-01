@@ -26,18 +26,18 @@ Good Luck!
 
 
 ####Screenshot
-**Format Disk Warning**
+Format Disk Warning:       
 ![WARNING](./ImageShow/Image.JPG)
 
-**Create BootUSB Success**
+Create BootUSB Success:      
 ![SUCCRSS](./ImageShow/101.JPG)
 
-**Create Faild**
+Create Faild:      
 ![FAILD](./ImageShow/Image2.JPG)
 
-**NewUI**
+NewUI:     
 ![NewUI](./ImageShow/NewUI.PNG)
 
 
-**Chinese UI**
+Chinese UI:       
 ![ChineseUI](./ImageShow/zh-CN.PNG)
