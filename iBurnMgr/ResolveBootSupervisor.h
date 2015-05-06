@@ -2,7 +2,7 @@
 * ResolveBootSupervisor.h
 * Note: iBurnMgr ResolveBootSupervisor
 * E-mail:<forcemz@outlook.com>
-* Data: @2015.03
+* Date: @2015.03
 * Copyright (C) 2015 The ForceStudio All Rights Reserved.
 **********************************************************************************************************/
 #ifndef RESOLVEBOOTSUPERVISOR
