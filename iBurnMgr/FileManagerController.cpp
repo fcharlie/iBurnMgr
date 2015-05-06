@@ -2,7 +2,7 @@
 * FileManagerController.cpp
 * Note: iBurnMgr FileManagerController
 * E-mail:<forcemz@outlook.com>
-* Data: @2015.03
+* Date: @2015.03
 * Copyright (C) 2015 The ForceStudio All Rights Reserved.
 **********************************************************************************************************/
 #include "Precompiled.h"
@@ -26,11 +26,11 @@ typedef struct _DialogInfo{
 const FileType FileArg[] =
 {
 	{ L"ISO/UDF file (*.iso)", L"*.iso" },
-	{ L"Onther Image file (*.img;*.dvd��*.bin)", L"*.img;*.dvd;*.bin" },
+	{ L"Onther Image file (*.img;*.dvd£»*.bin)", L"*.img;*.dvd;*.bin" },
 	{ L"All Files (*.*)", L"*.*" }
 };
 UINT Argc = ARRAYSIZE(FileArg);
-//DialogInfo dlf={L"��Դ�ļ�",L"cpp"};
+//DialogInfo dlf={L"´ò¿ªÔ´ÎÄ¼þ",L"cpp"};
 void ReportErrorEx(LPCWSTR pszFunction, HRESULT hr)
 {
 	wchar_t szMessage[200];
