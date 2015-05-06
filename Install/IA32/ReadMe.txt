@@ -1,1 +1,1 @@
-clieck nstall.bat config Launcher,run Launcher start iBurnMgr¡£
+clieck install.bat config Launcher,run Launcher start iBurnMgr
