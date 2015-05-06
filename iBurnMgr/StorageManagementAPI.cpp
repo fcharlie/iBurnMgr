@@ -2,7 +2,7 @@
 * StorageManagementAPI.cpp
 * Note: iBurnMgr StorageManagementAPI
 * E-mail:<forcemz@outlook.com>
-* Data: @2015.03
+* Date: @2015.03
 * Copyright (C) 2015 The ForceStudio All Rights Reserved.
 **********************************************************************************************************/
 #include "Precompiled.h"
@@ -74,7 +74,7 @@ typedef BOOLEAN(__stdcall *PENABLEVOLUMECOMPRESSION)(PWCHAR DriveRoot, BOOL Enab
 PFORMATEX FormatEx;
 PENABLEVOLUMECOMPRESSION EnableVolumeCompression;
 
-//³õÊ¼»¯
+//åˆå§‹åŒ–
 bool InitFormatEx()
 {
 	LoadLibrary(L"fmifs.dll");
@@ -95,9 +95,9 @@ BOOLEAN __stdcall FormatExCallback(CALLBACKCOMMAND Command, DWORD Modifier, PVOI
 
 	switch (Command)
 	{
-	case PROGRESS:    //¸ñÊ½»¯½ø¶È
+	case PROGRESS:    //æ ¼å¼åŒ–è¿›åº¦
 		percent = (PDWORD)Argument;
-		//DebugString("¸ñÊ½»¯½ø¶È: %d \n", *percent);
+		//DebugString("æ ¼å¼åŒ–è¿›åº¦: %d \n", *percent);
 		break;
 
 	case OUTPUT:
@@ -105,17 +105,17 @@ BOOLEAN __stdcall FormatExCallback(CALLBACKCOMMAND Command, DWORD Modifier, PVOI
 		sprintf_s(Buffer, "%s", output->Output);
 		break;
 
-	case DONE:    //¸ñÊ½»¯Íê³É
+	case DONE:    //æ ¼å¼åŒ–å®Œæˆ
 		status = (PBOOLEAN)Argument;
 		if (*status == FALSE)
 		{
-			//DebugString("¸ñÊ½»¯Î´ÄÜ³É¹¦Íê³É(%d)\n", GetLastError());
+			//DebugString("æ ¼å¼åŒ–æœªèƒ½æˆåŠŸå®Œæˆ(%d)\n", GetLastError());
 			//MakePageFile(iMin, iMax, szPageFilePath);
 			Error = TRUE;
 		}
 		else
 		{
-			//DebugString("¸ñÊ½»¯Íê³É!");
+			//DebugString("æ ¼å¼åŒ–å®Œæˆ!");
 			//MakePageFile(iMin, iMax, szPageFilePath);
 		}
 
