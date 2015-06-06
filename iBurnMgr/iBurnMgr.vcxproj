@@ -190,7 +190,7 @@
     <ClInclude Include="UniversalDiskFormatModel.h" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="iBurn.rc" />
+    <ResourceCompile Include="iBurnMgr.rc" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Image\small.ico" />

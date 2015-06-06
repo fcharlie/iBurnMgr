@@ -285,7 +285,7 @@ dwExit(0)
 	MTNotices = L"Notices Center:";
 	JobStatusRate = L"Task not start";
 	ProcessInfo = L"Manager Task Rate:";
-	copyright = L"Copyright \xA9 2015 The ForceStudio.";
+	copyright = L"Copyright \xA9 2015 Force Charlie.";
 	m_mbFind.bStatus = false;
 	m_mbFind.caption =MUI::muiController.atString(L"Discover",L"Discover...");
 	m_FixBoot.bStatus = false;
@@ -587,16 +587,16 @@ LRESULT MetroWindow::OnMultiThreadProcess(UINT nMsg, WPARAM wParam, LPARAM lPara
 	switch (bs)
 	{
 	case MET_INSPECTIONEC:
-		MTNotices = L"Notices> Enviroment Inspection:\n";
+		MTNotices = L"Notices> \nEnviroment Inspection:\n";
 		envinfo = (WCHAR*)lParam;
 		MTNotices += (WCHAR*)lParam;
 		break;
 	case MET_DECOMPRESS:
-		MTNotices = L"Notices> Decompress Status:\n";
+		MTNotices = L"Notices> \nDecompress Status:\n";
 		MTNotices += (WCHAR*)lParam;
 		break;
 	case MET_RESOLVEBS:
-		MTNotices = L"Notices> Resolve Boot:\n";
+		MTNotices = L"Notices> \nResolve Boot:\n";
 		MTNotices += (WCHAR*)lParam;
 		break;
 	case MET_POST_PID_ADD:
@@ -608,7 +608,7 @@ LRESULT MetroWindow::OnMultiThreadProcess(UINT nMsg, WPARAM wParam, LPARAM lPara
 		pidkill.status = false;
 		break;
 	default:
-		MTNotices = L"Notices> Other Notices:";
+		MTNotices = L"Notices> \nOther Notices:";
 		MTNotices += (WCHAR*)lParam;
 		break;
 	}	
@@ -1010,14 +1010,14 @@ HRESULT MetroWindow::CreateDeviceResources()
 		if (SUCCEEDED(hr))
 		{
 			hr = m_pRenderTarget->CreateSolidColorBrush(
-				D2D1::ColorF(D2D1::ColorF::DarkOrange),
+				D2D1::ColorF(0x1E90FF),
 				&m_pMetroButtonNsBrush
 				);
 		}
 		if (SUCCEEDED(hr))
 		{
 			hr = m_pRenderTarget->CreateSolidColorBrush(
-				D2D1::ColorF(D2D1::ColorF::Orange),
+				D2D1::ColorF(0x1EB0F0),
 				&m_pMetroButtonLsBrush
 				);
 		}
@@ -1117,7 +1117,7 @@ HRESULT MetroWindow::OnRender()
 		m_pRenderTarget->DrawTextW(ImageFile.c_str(), ImageFile.size(), m_pITextFormatContent, D2D1::RectF(30, 95, 110, 122), m_pControlTextBrush, D2D1_DRAW_TEXT_OPTIONS_NONE, DWRITE_MEASURING_MODE_NATURAL);
 		m_pRenderTarget->DrawTextW(ImageSize.c_str(), ImageSize.size(), m_pITextFormatContent, D2D1::RectF(30, 130, 110, 157), m_pControlTextBrush, D2D1_DRAW_TEXT_OPTIONS_NONE, DWRITE_MEASURING_MODE_NATURAL);
 		m_pRenderTarget->DrawTextW(Description.c_str(), Description.size(), m_pITextFormatContent, D2D1::RectF(30, 167, 110, 221), m_pControlTextBrush, D2D1_DRAW_TEXT_OPTIONS_NONE, DWRITE_MEASURING_MODE_NATURAL);
-		m_pRenderTarget->DrawTextW(copyright.c_str(), copyright.size(), m_pITextFormatContent, D2D1::RectF(30, m_Operate.place.top, 400, m_Operate.place.bottom), m_pControlTextBrush, D2D1_DRAW_TEXT_OPTIONS_NONE, DWRITE_MEASURING_MODE_NATURAL);
+		m_pRenderTarget->DrawTextW(copyright.c_str(), copyright.size(), m_pITextFormatContent, D2D1::RectF(30, m_Operate.place.top+10, 400, m_Operate.place.bottom), m_pControlTextBrush, D2D1_DRAW_TEXT_OPTIONS_NONE, DWRITE_MEASURING_MODE_NATURAL);
 		m_pITextFormatContent->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_JUSTIFIED);
 		m_pRenderTarget->DrawTextW(ProcessInfo.c_str(), ProcessInfo.length(), m_pITextFormatContent, D2D1::RectF(320.0f, xArea.bottom + 30.0f, xArea.right, xArea.bottom + 200.0f), m_pControlTextBrush, D2D1_DRAW_TEXT_OPTIONS_NONE, DWRITE_MEASURING_MODE_NATURAL);
 		m_pRenderTarget->DrawTextW(JobStatusRate.c_str(), JobStatusRate.length(), m_pITextFormatContent, D2D1::RectF(320.0f, xArea.bottom + 90.0f, xArea.right, xArea.bottom + 260.0f), m_pControlTextBrush, D2D1_DRAW_TEXT_OPTIONS_NONE, DWRITE_MEASURING_MODE_NATURAL);
