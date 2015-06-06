@@ -3,7 +3,7 @@
 LangNameShort=zh_CN
 LangName=简体中文
 Adm=管理员
-OpenImage=查找镜像
+Discover=查找镜像
 BMake=开始制作
 Fixboot=修复引导
 USBdrive=USB设备:

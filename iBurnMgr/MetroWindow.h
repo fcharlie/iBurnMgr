@@ -53,7 +53,7 @@ namespace Metro{
 		ID2D1SolidColorBrush* m_pMinButtonActiveBrush;
 		ID2D1SolidColorBrush* m_pMetroButtonNsBrush;
 		ID2D1SolidColorBrush* m_pMetroButtonLsBrush;
-		ID2D1SolidColorBrush* m_pUITextBrush;
+		ID2D1SolidColorBrush* m_EdgeViewBrush;
 		ID2D1SolidColorBrush* m_pCloseButtonClickBrush;
 		ID2D1SolidColorBrush* m_pLightWhiteBrush;
 		ID2D1SolidColorBrush* m_pControlTextBrush;
@@ -124,7 +124,7 @@ namespace Metro{
 		LRESULT OnMinSize(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
 		LRESULT OnMeClose(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
 		LRESULT OnAbout(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
-		void FindISOImage();
+		void DiscoverInstallerImage();
 		LRESULT OnDecompress();
 		LRESULT OnFixBootDrive();
 		DWORD GetExitCode(){ return dwExit; }
