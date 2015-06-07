@@ -732,7 +732,9 @@ LRESULT MetroWindow::OnMinSize(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& b
 
 LRESULT MetroWindow::OnSupport(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled)
 {
-	ShellExecute(m_hWnd, L"open",L"https://github.com/forcegroup",NULL,NULL,SW_MAXIMIZE);
+	WCHAR urlStr[1024] = { 0 };
+	::LoadStringW(GetModuleHandle(nullptr), IDR_APP_URL_STRING, urlStr, 1024);
+	ShellExecute(m_hWnd, L"open",urlStr,NULL,NULL,SW_MAXIMIZE);
 	return 0;
 }
 
@@ -895,7 +897,7 @@ LRESULT MetroWindow::OnFixBootDrive()
 void MetroWindow::DiscoverInstallerImage()
 {
 	wchar_t szImageFile[MAX_UNC_PATH] = { 0 };
-	if (OpenImageFile(m_hWnd, szImageFile) == S_OK)
+	if (DiscoverInstallerIMAGE(m_hWnd, szImageFile) == S_OK)
 	{
 		::SetWindowText(GetDlgItem(IDC_EDIT_IMAGE), szImageFile);
 		ProcessInfo = L"Manager Task Rate:";
@@ -1081,7 +1083,7 @@ HRESULT MetroWindow::OnRender()
 	{
 		m_pRenderTarget->BeginDraw();
 		m_pRenderTarget->SetTransform(D2D1::Matrix3x2F::Identity());
-		m_pRenderTarget->Clear(D2D1::ColorF(0xF2F2F2));
+		m_pRenderTarget->Clear(D2D1::ColorF(0xFFFFFF));
 		////Draw Exit area
 		POINT pt;
 		GetCursorPos(&pt);
@@ -1105,8 +1107,8 @@ HRESULT MetroWindow::OnRender()
 			D2D1::RectF(
 			upperLeftCorner.x,
 			upperLeftCorner.y,
-			upperLeftCorner.x + size.width,
-			upperLeftCorner.y + size.height)
+			upperLeftCorner.x + size.width-2,
+			upperLeftCorner.y + size.height-2)
 			);
 
 		//// Text Draw

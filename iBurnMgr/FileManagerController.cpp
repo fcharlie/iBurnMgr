@@ -26,7 +26,7 @@ typedef struct _DialogInfo{
 const FileType FileArg[] =
 {
 	{ L"ISO/UDF file (*.iso)", L"*.iso" },
-	{ L"Onther Image file (*.img;*.dvd£»*.bin)", L"*.img;*.dvd;*.bin" },
+	{ L"Onther Image file (*.img;*.dvd;*.bin)", L"*.img;*.dvd;*.bin" },
 	{ L"All Files (*.*)", L"*.*" }
 };
 UINT Argc = ARRAYSIZE(FileArg);
@@ -41,7 +41,7 @@ void ReportErrorEx(LPCWSTR pszFunction, HRESULT hr)
 	}
 }
 
-LRESULT OpenImageFile(HWND hWnd, PWSTR Imagename)
+LRESULT DiscoverInstallerIMAGE(HWND hWnd, PWSTR nameofimage)
 {
 	HRESULT hr = S_OK;
 
@@ -53,7 +53,7 @@ LRESULT OpenImageFile(HWND hWnd, PWSTR Imagename)
 	{
 		if (SUCCEEDED(hr))
 		{
-			hr = pfd->SetTitle(L"Select the Image file");
+			hr = pfd->SetTitle(L"Select the Installation image");
 		}
 
 		// Specify file types for the file dialog.
@@ -88,7 +88,7 @@ LRESULT OpenImageFile(HWND hWnd, PWSTR Imagename)
 					hr = psiResult->GetDisplayName(SIGDN_FILESYSPATH, &pszPath);
 					if (SUCCEEDED(hr))
 					{
-						wcscpy_s(Imagename, (1024*32-1), pszPath);
+						wcscpy_s(nameofimage, (1024*32-1), pszPath);
 						//MessageBox(hWnd, pszPath, L"The selected file is", MB_OK);
 						CoTaskMemFree(pszPath);
 					}
@@ -114,7 +114,7 @@ LRESULT OpenImageFile(HWND hWnd, PWSTR Imagename)
 		// message box.
 		if (hr != HRESULT_FROM_WIN32(ERROR_CANCELLED))
 		{
-			ReportErrorEx(L"OnOpenAFile", hr);
+			ReportErrorEx(L"DiscoverInstallerIMAGE", hr);
 		}
 	}
 	return hr;

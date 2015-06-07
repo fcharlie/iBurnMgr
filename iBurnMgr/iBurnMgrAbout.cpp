@@ -95,10 +95,11 @@ LRESULT WINAPI CreateTaskDialogIndirectFd(
 	wcscpy_s(szContent, L"Copyright © 2015 The ForceStudio. All Rights Reserved.");
 
 	tdConfig.pszContent = szContent;
-
-	tdConfig.pszExpandedInformation = _T("For more information about this tool, ")
-		_T("Visit: <a href=\"https://github.com/forcegroup\">Force\xAEStudio</a>");
-
+	WCHAR urlStr[1024] = { 0 };
+	::LoadStringW(GetModuleHandle(nullptr), IDR_APP_URL_STRING, urlStr, 1024);
+	WCHAR szStr[2048] = { 0 };
+	wsprintfW(szStr, L"For more information about this tool,\nVisit: <a href=\"%s\">Force\xAEStudio</a>", urlStr);
+	tdConfig.pszExpandedInformation = szStr;
 	tdConfig.pszCollapsedControlText = _T("More information");
 	tdConfig.pszExpandedControlText = _T("Less information");
 	tdConfig.pfCallback = TaskDialogCallbackProc;

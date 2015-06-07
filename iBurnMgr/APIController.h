@@ -15,8 +15,8 @@
 #define  METRO_INTERNAL_WINDOWLNAME  L"Metro.Native.Window"
 
 ///Must Include Window.h
-/// Imagename must 32*1024-1
-LRESULT OpenImageFile(HWND hWnd, PWSTR Imagename);
+/// nameofimage must 32*1024-1
+LRESULT DiscoverInstallerIMAGE(HWND hWnd, PWSTR nameofimage);
 
 #define MET_INSPECTIONEC                        1
 #define MET_DECOMPRESS				2
