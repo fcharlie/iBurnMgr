@@ -329,7 +329,6 @@ MetroWindow::~MetroWindow()
 		TerminateThread(hThread, 0);
 		CloseHandle(hThread);
 	}
-
 }
 
 LRESULT MetroWindow::OnCreate(UINT nMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled)
@@ -979,14 +978,14 @@ HRESULT MetroWindow::CreateDeviceResources()
 		if (SUCCEEDED(hr))
 		{
 			hr = LoadResourceBitmap(m_pRenderTarget, m_pWICFactory,
-				MAKEINTRESOURCE(IDP_EMOJI_LOG),
+				MAKEINTRESOURCE(IDP_TITLE_IMAGE),
 				L"PNG",
 				0, 0, &m_pBitmap);
 		}
 		if (SUCCEEDED(hr))
 		{
 			hr = LoadResourceBitmap(m_pRenderTarget, m_pWICBackground,
-				MAKEINTRESOURCE(IDP_BACKGROUND),
+				MAKEINTRESOURCE(IDP_BACKGROUND_IMAGE),
 				L"PNG",
 				0, 0, &m_pBitmapBkg);
 		}

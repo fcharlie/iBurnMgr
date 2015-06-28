@@ -193,6 +193,8 @@
     <ResourceCompile Include="iBurnMgr.rc" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="Image\Background.png" />
+    <Image Include="Image\EMojiFace.png" />
     <Image Include="Image\small.ico" />
   </ItemGroup>
   <ItemGroup>
