@@ -58,7 +58,6 @@ namespace Metro{
 		ID2D1SolidColorBrush* m_pControlTextBrush;
 
 		IWICImagingFactory*		m_pWICFactory;
-		IWICImagingFactory*  m_pWICBackground;
 		ID2D1Bitmap* m_pBitmap;
 		ID2D1Bitmap* m_pBitmapBkg;
 		IDWriteTextFormat* m_pITextFormatTitle;

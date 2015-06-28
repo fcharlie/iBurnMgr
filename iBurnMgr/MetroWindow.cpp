@@ -256,7 +256,6 @@ m_pControlTextBrush(NULL),
 m_pDWriteTypography(NULL),
 m_pCloseButtonClickBrush(NULL),
 m_pWICFactory(NULL),
-m_pWICBackground(NULL),
 m_pBitmap(NULL),
 m_pBitmapBkg(NULL),
 m_pITextFormatTitle(NULL),
@@ -317,11 +316,6 @@ MetroWindow::~MetroWindow()
 	SafeRelease(&m_pIDWriteFactory);
 	SafeRelease(&m_pITextFormatTitle);
 	SafeRelease(&m_pITextFormatContent);
-	//SafeRelease(&m_pBitmap);
-	//SafeRelease(&m_pBitmapBkg);
-	//SafeRelease(&m_pWICBackground);
-	//SafeRelease(&m_pWICFactory);
-
 
 	HANDLE hThread = OpenThread(DELETE, FALSE, this->iseThreadID);
 	if (hThread)
@@ -965,16 +959,6 @@ HRESULT MetroWindow::CreateDeviceResources()
 				reinterpret_cast<void **>(&m_pWICFactory)
 				);
 		}
-		if (SUCCEEDED(hr)){
-			hr = CoCreateInstance(
-				CLSID_WICImagingFactory1,
-				NULL,
-				CLSCTX_INPROC_SERVER,
-				IID_IWICImagingFactory,
-				reinterpret_cast<void **>(&m_pWICBackground)
-				);
-		}
-		//m_pWICBackground
 		if (SUCCEEDED(hr))
 		{
 			hr = LoadResourceBitmap(m_pRenderTarget, m_pWICFactory,
@@ -984,7 +968,7 @@ HRESULT MetroWindow::CreateDeviceResources()
 		}
 		if (SUCCEEDED(hr))
 		{
-			hr = LoadResourceBitmap(m_pRenderTarget, m_pWICBackground,
+			hr = LoadResourceBitmap(m_pRenderTarget, m_pWICFactory,
 				MAKEINTRESOURCE(IDP_BACKGROUND_IMAGE),
 				L"PNG",
 				0, 0, &m_pBitmapBkg);
