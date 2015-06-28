@@ -30,7 +30,7 @@
 
 NAMESPACEMETRO
 extern MUI::LocaleInfo localeinfo;
-WCHAR SizeStr[120] = { L" 0 Byte\0" };
+WCHAR SizeStr[120] = { '0',' ','B','y','t','e','s','\0'};//Background
 #define DEFAULT_NOTES L"Irreversible behavior(Format),Task running don't remove or insert the device\nSupport: Windows 7 or Later And Corresponding Server OS"
 std::wstring Notes;
 static Decompress::SupervisorData SpData = {L"null",L"A:",0};
@@ -247,7 +247,6 @@ HRESULT LoadResourceBitmap(
 
 MetroWindow::MetroWindow() :m_pDirect2dFactory(NULL),
 m_pRenderTarget(NULL),
-m_TitleClinetBrush(NULL),
 m_pMinButtonActiveBrush(NULL),
 m_pMetroButtonNsBrush(NULL),
 m_pMetroButtonLsBrush(NULL),
@@ -257,7 +256,9 @@ m_pControlTextBrush(NULL),
 m_pDWriteTypography(NULL),
 m_pCloseButtonClickBrush(NULL),
 m_pWICFactory(NULL),
+m_pWICBackground(NULL),
 m_pBitmap(NULL),
+m_pBitmapBkg(NULL),
 m_pITextFormatTitle(NULL),
 m_pITextFormatContent(NULL),
 m_pIDWriteFactory(NULL),
@@ -305,7 +306,6 @@ MetroWindow::~MetroWindow()
 {
 	SafeRelease(&m_pDirect2dFactory);
 	SafeRelease(&m_pRenderTarget);
-	SafeRelease(&m_TitleClinetBrush);
 	SafeRelease(&m_pMinButtonActiveBrush);
 	SafeRelease(&m_pMetroButtonNsBrush);
 	SafeRelease(&m_pMetroButtonLsBrush);
@@ -317,7 +317,10 @@ MetroWindow::~MetroWindow()
 	SafeRelease(&m_pIDWriteFactory);
 	SafeRelease(&m_pITextFormatTitle);
 	SafeRelease(&m_pITextFormatContent);
-	
+	//SafeRelease(&m_pBitmap);
+	//SafeRelease(&m_pBitmapBkg);
+	//SafeRelease(&m_pWICBackground);
+	//SafeRelease(&m_pWICFactory);
 
 
 	HANDLE hThread = OpenThread(DELETE, FALSE, this->iseThreadID);
@@ -388,13 +391,10 @@ LRESULT MetroWindow::OnCreate(UINT nMsg, WPARAM wParam, LPARAM lParam, BOOL & bH
 
 LRESULT MetroWindow::OnPaint(UINT nMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled)
 {
-	//Invalidate(FALSE);
 	PAINTSTRUCT ps;
 	::BeginPaint(m_hWnd, &ps);
-	//HDC dcBuffer = CreateCompatibleDC(hdc);
 	OnRender();
 	::EndPaint(m_hWnd, &ps);
-	//ValidateRect(NULL);
 	return 0;
 }
 
@@ -484,7 +484,6 @@ LRESULT MetroWindow::OnLButtonUp(UINT nMsg, WPARAM wParam, LPARAM lParam, BOOL &
 	}
 	if (pt.x >= m_mbFind.place.left&&pt.x <= m_mbFind.place.right&&pt.y >= m_mbFind.place.top&&pt.y <= m_mbFind.place.bottom)
 	{
-		//MessageBox(L"View", L"ViewOpt", MB_OK);
 		if (IsInvalid)
 			return 0;
 		this->DiscoverInstallerImage();
@@ -967,6 +966,16 @@ HRESULT MetroWindow::CreateDeviceResources()
 				reinterpret_cast<void **>(&m_pWICFactory)
 				);
 		}
+		if (SUCCEEDED(hr)){
+			hr = CoCreateInstance(
+				CLSID_WICImagingFactory1,
+				NULL,
+				CLSCTX_INPROC_SERVER,
+				IID_IWICImagingFactory,
+				reinterpret_cast<void **>(&m_pWICBackground)
+				);
+		}
+		//m_pWICBackground
 		if (SUCCEEDED(hr))
 		{
 			hr = LoadResourceBitmap(m_pRenderTarget, m_pWICFactory,
@@ -976,16 +985,16 @@ HRESULT MetroWindow::CreateDeviceResources()
 		}
 		if (SUCCEEDED(hr))
 		{
-			hr = m_pRenderTarget->CreateSolidColorBrush(
-				D2D1::ColorF(D2D1::ColorF::DarkGray),
-				&m_pMinButtonActiveBrush
-				);
+			hr = LoadResourceBitmap(m_pRenderTarget, m_pWICBackground,
+				MAKEINTRESOURCE(IDP_BACKGROUND),
+				L"PNG",
+				0, 0, &m_pBitmapBkg);
 		}
 		if (SUCCEEDED(hr))
 		{
 			hr = m_pRenderTarget->CreateSolidColorBrush(
-				D2D1::ColorF(0xCCCCCC),
-				&m_TitleClinetBrush
+				D2D1::ColorF(D2D1::ColorF::Silver),
+				&m_pMinButtonActiveBrush
 				);
 		}
 		if (SUCCEEDED(hr))
@@ -1012,14 +1021,14 @@ HRESULT MetroWindow::CreateDeviceResources()
 		if (SUCCEEDED(hr))
 		{
 			hr = m_pRenderTarget->CreateSolidColorBrush(
-				D2D1::ColorF(0x1E90FF),
+				D2D1::ColorF(D2D1::ColorF::Gold),
 				&m_pMetroButtonNsBrush
 				);
 		}
 		if (SUCCEEDED(hr))
 		{
 			hr = m_pRenderTarget->CreateSolidColorBrush(
-				D2D1::ColorF(0x1EB0F0),
+				D2D1::ColorF(D2D1::ColorF::Yellow),
 				&m_pMetroButtonLsBrush
 				);
 		}
@@ -1039,7 +1048,6 @@ HRESULT MetroWindow::CreateDeviceResources()
 void MetroWindow::DiscardDeviceResources()
 {
 	SafeRelease(&m_pRenderTarget);
-	SafeRelease(&m_TitleClinetBrush);
 	SafeRelease(&m_pMinButtonActiveBrush);
 	SafeRelease(&m_pMetroButtonNsBrush);
 	SafeRelease(&m_pMetroButtonLsBrush);
@@ -1047,6 +1055,8 @@ void MetroWindow::DiscardDeviceResources()
 	SafeRelease(&m_EdgeViewBrush);
 	SafeRelease(&m_pCloseButtonClickBrush);
 	SafeRelease(&m_pControlTextBrush);
+	SafeRelease(&m_pBitmap);
+	SafeRelease(&m_pBitmapBkg);
 }
 HRESULT MetroWindow::OnRender()
 {
@@ -1098,10 +1108,11 @@ HRESULT MetroWindow::OnRender()
 
 #pragma warning(disable:4244)
 #pragma warning(disable:4267)
-		m_pRenderTarget->FillRectangle(D2D1::RectF(0, 0, rtSize.width, 30),m_TitleClinetBrush);
 		D2D1_SIZE_F size = m_pBitmap->GetSize();
 		D2D1_POINT_2F upperLeftCorner = D2D1::Point2F(0.f, 0.f);
-
+		m_pRenderTarget->DrawBitmap(m_pBitmapBkg, D2D1::RectF(
+			0, 0, width, height
+			));
 		m_pRenderTarget->DrawBitmap(
 			m_pBitmap,
 			D2D1::RectF(
@@ -1110,6 +1121,7 @@ HRESULT MetroWindow::OnRender()
 			upperLeftCorner.x + size.width-2,
 			upperLeftCorner.y + size.height-2)
 			);
+
 
 		//// Text Draw
 		m_pRenderTarget->DrawTextW(windowTitle.c_str(), windowTitle.length(), m_pITextFormatTitle, D2D1::RectF(35, 5, 600, 25), m_pControlTextBrush, D2D1_DRAW_TEXT_OPTIONS_NONE, DWRITE_MEASURING_MODE_NATURAL);

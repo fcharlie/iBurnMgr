@@ -49,7 +49,6 @@ namespace Metro{
 		DWORD FontTabel;
 		ID2D1Factory* m_pDirect2dFactory;
 		ID2D1HwndRenderTarget* m_pRenderTarget;
-		ID2D1SolidColorBrush* m_TitleClinetBrush;
 		ID2D1SolidColorBrush* m_pMinButtonActiveBrush;
 		ID2D1SolidColorBrush* m_pMetroButtonNsBrush;
 		ID2D1SolidColorBrush* m_pMetroButtonLsBrush;
@@ -59,7 +58,9 @@ namespace Metro{
 		ID2D1SolidColorBrush* m_pControlTextBrush;
 
 		IWICImagingFactory*		m_pWICFactory;
+		IWICImagingFactory*  m_pWICBackground;
 		ID2D1Bitmap* m_pBitmap;
+		ID2D1Bitmap* m_pBitmapBkg;
 		IDWriteTextFormat* m_pITextFormatTitle;
 		IDWriteTextFormat* m_pITextFormatContent;
 		IDWriteFactory* m_pIDWriteFactory;
