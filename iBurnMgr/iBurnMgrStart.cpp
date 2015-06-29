@@ -21,7 +21,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance,
 {
 	UNREFERENCED_PARAMETER(hPrevInstance);
 	UNREFERENCED_PARAMETER(lpCmdLine);
-
+	HeapSetInformation(NULL, HeapEnableTerminationOnCorruption, NULL, 0);
 	Metro::MUI::muiController.Init();
 	_Module.Init(nullptr, hInstance);
 	MSG msg;
