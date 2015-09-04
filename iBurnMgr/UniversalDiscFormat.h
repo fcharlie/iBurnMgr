@@ -24,7 +24,7 @@
 NAMESPACEMETRO
 UNNAMESPACE
 
-class UniversalDiskFormatDecode{
+class UniversalDiscFormatDecode{
 private:
 	//IDiscRecorder2Ex
 	IDiscFormat2Data* m_pIDiscFormat2Data;
@@ -36,8 +36,8 @@ public:
 		DiscJoliet=2,
 		DiscUDF=3
 	};
-	UniversalDiskFormatDecode(std::wstring image,std::wstring drive);
-	~UniversalDiskFormatDecode();
+	UniversalDiscFormatDecode(std::wstring image,std::wstring drive);
+	~UniversalDiscFormatDecode();
 };
 
 

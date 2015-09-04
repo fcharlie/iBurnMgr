@@ -28,14 +28,14 @@
     <ClCompile Include="StorageManagementAPI.cpp">
       <Filter>Sources\Model</Filter>
     </ClCompile>
-    <ClCompile Include="UniversalDiskFormatDecode.cpp">
-      <Filter>Sources\Model</Filter>
-    </ClCompile>
     <ClCompile Include="MUIController.cpp">
       <Filter>Sources\Controller</Filter>
     </ClCompile>
     <ClCompile Include="FileManagerController.cpp">
       <Filter>Sources\Controller</Filter>
+    </ClCompile>
+    <ClCompile Include="UniversalDiscFormatDecode.cpp">
+      <Filter>Sources\Model</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -66,11 +66,11 @@
     <ClInclude Include="InspectionEnvironment.h">
       <Filter>Header\Model</Filter>
     </ClInclude>
-    <ClInclude Include="UniversalDiskFormatModel.h">
-      <Filter>Header\Model</Filter>
-    </ClInclude>
     <ClInclude Include="MUIController.h">
       <Filter>Header\Controller</Filter>
+    </ClInclude>
+    <ClInclude Include="UniversalDiscFormat.h">
+      <Filter>Header\Model</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

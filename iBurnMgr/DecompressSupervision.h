@@ -15,6 +15,12 @@
 /// 3 Check End Return Success
 
 
+BOOL WINAPI  IVdsVolumeFormat(
+	LPCWSTR    latter,
+	LPWSTR    pwszLabel,
+	FormatCallback fcall,
+	void *data);
+
 namespace Decompress{
 	typedef struct _SupervisorData{
 		std::wstring image;
@@ -29,7 +35,7 @@ namespace Decompress{
 		std::wstring m_image;
 		std::wstring m_latter;
 		HWND hParents;
-		bool FormatUSBDevice();
+		//bool FormatUSBDevice();
 	public:
 		bool CreateDecompressFormat();
 		static bool WINAPI CreateDecompressInvoke(HWND hWnd,std::wstring img, LPWSTR latter);

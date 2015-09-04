@@ -8,14 +8,13 @@
 #ifndef EQUIPMENTCONTROLLER_H
 #define EQUIPMENTCONTROLLER_H
 
-typedef struct _Equipment{
-	unsigned int Id;
-	wchar_t driveLetter[5];
-	wchar_t DrivesPath[9];
-	wchar_t SizeInfo[260];
-}DrivesEquipment;
+typedef struct _RemoveableDrive{
+	wchar_t driveLetter[4];
+	wchar_t drivePath[8];
+	wchar_t sizeInfo[160];
+}RemoveableDrive;
 
-UINT WINAPI  TraversalEquipment();
+UINT WINAPI  DiscoverRemoveableDrives(ULONGLONG limitSize = 0);
 
-extern DrivesEquipment DrivesList[26];
+extern RemoveableDrive g_DriveList[26];
 #endif

@@ -174,7 +174,7 @@
     <ClCompile Include="iBurnMgrStart.cpp" />
     <ClCompile Include="ResolveBootSupervisor.cpp" />
     <ClCompile Include="StorageManagementAPI.cpp" />
-    <ClCompile Include="UniversalDiskFormatDecode.cpp" />
+    <ClCompile Include="UniversalDiscFormatDecode.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="APIController.h" />
@@ -187,7 +187,7 @@
     <ClInclude Include="Precompiled.h" />
     <ClInclude Include="ResolveBootSupervisor.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="UniversalDiskFormatModel.h" />
+    <ClInclude Include="UniversalDiscFormat.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="iBurnMgr.rc" />

@@ -367,11 +367,11 @@ LRESULT MetroWindow::OnCreate(UINT nMsg, WPARAM wParam, LPARAM lParam, BOOL & bH
 	m_proge.Create(m_hWnd, rect, L"Progress Times", dwpgSt, dwpgExSt, HMENU(IDC_PROCESS_TIME), NULL);
 	m_combox.SendMessage(WM_SETFONT, (WPARAM)hFont, lParam);
 	m_edit.SendMessage( WM_SETFONT, (WPARAM)hFont, lParam);
-	UINT usbnub = TraversalEquipment();
+	UINT usbnub = DiscoverRemoveableDrives();
 	if (usbnub > 0)
 	{
 		for (UINT i = 0; i < usbnub; i++){
-			m_combox.SendMessage(CB_ADDSTRING, 0, (LPARAM) (DrivesList[i].SizeInfo));
+			m_combox.SendMessage(CB_ADDSTRING, 0, (LPARAM) (g_DriveList[i].sizeInfo));
 		}
 	}
 	Initialize();
@@ -532,12 +532,12 @@ LRESULT MetroWindow::OnDeviceChange(UINT nMsg, WPARAM wParam, LPARAM lParam, BOO
 {
 	::SendMessage(::GetDlgItem(m_hWnd, IDC_COMBOX_DEVICE), CB_RESETCONTENT, 0, 0L);
 	//This message is sent by an application to remove all items from the list box and edit control of a combo box.
-	UINT umb = TraversalEquipment();
+	UINT umb = DiscoverRemoveableDrives();
 	if (umb>0)
 	{
 		for (UINT i = 0; i<umb; i++)
 		{
-			::SendMessage(::GetDlgItem(m_hWnd, IDC_COMBOX_DEVICE), CB_ADDSTRING, 0, (LPARAM)(DrivesList[i].SizeInfo));
+			::SendMessage(::GetDlgItem(m_hWnd, IDC_COMBOX_DEVICE), CB_ADDSTRING, 0, (LPARAM)(g_DriveList[i].sizeInfo));
 		}
 	}
 	return 0;
@@ -849,7 +849,8 @@ LRESULT MetroWindow::OnDecompress()
 		IsInvalid = false;
 		return 1;
 	}
-	wcscpy_s(SpData.latter, 9, DrivesList[i].driveLetter);
+
+	wcscpy_s(SpData.latter, 9, g_DriveList[i].driveLetter);
 	SpData.lParam = m_hWnd;
 	ProcessInfo = L"Making Rate:";
 	JobStatusRate = L"Task is started";
@@ -875,7 +876,8 @@ LRESULT MetroWindow::OnFixBootDrive()
 		IsInvalid = false;
 		return 1;
 	}
-	reData.latter = DrivesList[i].driveLetter;
+	
+	reData.latter = g_DriveList[i].driveLetter;
 	reData.m_hWnd = static_cast<HWND>(m_hWnd);
 	ProcessInfo = L"Resolve Boot Rate:";
 	JobStatusRate = L"Fix Boot is started";
@@ -898,15 +900,14 @@ void MetroWindow::DiscoverInstallerImage()
 		m_proge.SetPos(0);
 		HANDLE hFile;
 		LARGE_INTEGER FileSize;
-		hFile = CreateFile(szImageFile, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+		hFile = CreateFileW(szImageFile, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 		if (hFile != INVALID_HANDLE_VALUE)
 		{
 			GetFileSizeEx(hFile, &FileSize);
-			swprintf_s(SizeStr, L" %lld Bytes ||%4.1f KB ||%4.2f MB ||%4.2f GB\0", FileSize.QuadPart, (float)FileSize.QuadPart / 1024, (float)FileSize.QuadPart / (1024 * 1024), (float)FileSize.QuadPart / (1024 * 1024 * 1024));
+			swprintf_s(SizeStr, L" %lld Bytes ||%4.1f KB ||%4.2f MB ||%4.2f GB", FileSize.QuadPart, (float)FileSize.QuadPart / 1024, (float)FileSize.QuadPart / (1024 * 1024), (float)FileSize.QuadPart / (1024 * 1024 * 1024));
 			SendMessage(WM_PAINT, 0, 0);
 		}
 		CloseHandle(hFile);
-		//::MessageBox(m_hWnd, szImageFile, L"Select the image file is:", MB_OK | MB_ICONASTERISK);
 	}
 }
 

@@ -19,6 +19,14 @@ UINT drate = 0;
 DWORD dwThreadId = 0;
 //bool FormatDriver(WCHAR *szDriver);
 
+static bool FormatCallbackInc(const wchar_t *msg, void *data){
+	if (!data||!msg) return false;
+	HWND hWnd = static_cast<HWND>(data);
+	SendMessageW(hWnd, Metro::METRO_MULTITHREAD_MSG, MET_DECOMPRESS, (LPARAM)msg);
+	return true;
+}
+
+
 namespace Decompress{
 	DWORD WINAPI DecompressDetectRate(LPVOID lParam)
 	{
@@ -121,7 +129,7 @@ namespace Decompress{
 			Sleep(1500);
 			return false;
 		}
-		if (FormatUSBDevice())
+		if (IVdsVolumeFormat(this->m_latter.c_str(),L"Installer",FormatCallbackInc,this->hParents)==TRUE)
 		{
 			PostMessage(hParents, Metro::METRO_THREAD_RATESTATUS_MSG, METRO_RATE_FORMAT, METRO_RATE_FORMAT_SUC);
 		}
@@ -132,49 +140,49 @@ namespace Decompress{
 		
 		return true;
 	}
-	bool Supervisor::FormatUSBDevice()
-	{
+	//bool Supervisor::FormatUSBDevice()
+	//{
 
-		WCHAR FormatCmd[260] = { 0 };
-		if(!SUCCEEDED(SHGetFolderPath(NULL, 
-                             CSIDL_WINDOWS|CSIDL_FLAG_NO_ALIAS, 
-                             NULL, 
-                             0, 
-                             FormatCmd))) 
-         {
-			 //Not Found format.com
-			 return false;
-		 }
-		wcscat_s(FormatCmd, L"\\System32\\format.com ");
-		wcscat_s(FormatCmd, m_latter.c_str());
-		wcscat_s(FormatCmd, L" /y /FS:NTFS /v:METROBOOT /q /x /A:4096");
-		PROCESS_INFORMATION pi;
-		STARTUPINFO sInfo;
-		DWORD dwExitCode;
-		ZeroMemory(&sInfo, sizeof(sInfo));
-		sInfo.cb = sizeof(sInfo);
-		sInfo.dwFlags = STARTF_USESHOWWINDOW;
-		sInfo.wShowWindow = SW_HIDE;
-		ZeroMemory(&pi, sizeof(pi));
-		DWORD result = CreateProcess(NULL, FormatCmd, NULL, NULL, NULL, CREATE_NO_WINDOW, NULL, NULL, &sInfo, &pi);
-		DWORD x = GetLastError();
-		if (result == TRUE)
-		{
-			CloseHandle(pi.hThread);
-			if(WAIT_TIMEOUT==WaitForSingleObject(pi.hProcess, INFINITE))
-			{
-				TerminateProcess(pi.hProcess, 11);
-			}
-			GetExitCodeProcess(pi.hProcess, &dwExitCode);
-			CloseHandle(pi.hProcess);
-			if (dwExitCode != 0)
-			{
-				return false;
-			}
-			return true;
-		};
-		return false;
-	}
+	//	WCHAR FormatCmd[260] = { 0 };
+	//	if(!SUCCEEDED(SHGetFolderPath(NULL, 
+ //                            CSIDL_WINDOWS|CSIDL_FLAG_NO_ALIAS, 
+ //                            NULL, 
+ //                            0, 
+ //                            FormatCmd))) 
+ //        {
+	//		 //Not Found format.com
+	//		 return false;
+	//	 }
+	//	wcscat_s(FormatCmd, L"\\System32\\format.com ");
+	//	wcscat_s(FormatCmd, m_latter.c_str());
+	//	wcscat_s(FormatCmd, L" /y /FS:NTFS /v:WinInstall /q /x /A:4096");
+	//	PROCESS_INFORMATION pi;
+	//	STARTUPINFO sInfo;
+	//	DWORD dwExitCode;
+	//	ZeroMemory(&sInfo, sizeof(sInfo));
+	//	sInfo.cb = sizeof(sInfo);
+	//	sInfo.dwFlags = STARTF_USESHOWWINDOW;
+	//	sInfo.wShowWindow = SW_HIDE;
+	//	ZeroMemory(&pi, sizeof(pi));
+	//	DWORD result = CreateProcess(NULL, FormatCmd, NULL, NULL, NULL, CREATE_NO_WINDOW, NULL, NULL, &sInfo, &pi);
+	//	DWORD x = GetLastError();
+	//	if (result == TRUE)
+	//	{
+	//		CloseHandle(pi.hThread);
+	//		if(WAIT_TIMEOUT==WaitForSingleObject(pi.hProcess, INFINITE))
+	//		{
+	//			TerminateProcess(pi.hProcess, 11);
+	//		}
+	//		GetExitCodeProcess(pi.hProcess, &dwExitCode);
+	//		CloseHandle(pi.hProcess);
+	//		if (dwExitCode != 0)
+	//		{
+	//			return false;
+	//		}
+	//		return true;
+	//	};
+	//	return false;
+	//}
 	bool WINAPI Supervisor::CreateDecompressInvoke(HWND hWnd,std::wstring img, LPWSTR latter)
 	{
 		WCHAR _7zCmd[MAX_UNC_PATH] = { 0 };
