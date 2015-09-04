@@ -12,6 +12,16 @@
 
 WCHAR g_resbootlog[100] = { 0 };
 
+/*
+Function: BootFileCopy
+*/
+bool BootFileCopy(const wchar_t *searchPath,wchar_t *filelist[],const wchar_t *latter){
+	for (auto i=0; filelist[i] != nullptr; i++){
+
+	}
+	return false;
+}
+
 
 namespace ResolveSupervisor{
 	DWORD WINAPI ResolveSupervisorThread(LPVOID lParam)

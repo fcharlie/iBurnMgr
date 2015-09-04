@@ -41,6 +41,8 @@ private:
 			);
 		assert(hr);
 	}
+	CoInitializeSignal(CoInitializeSignal &);
+	CoInitializeSignal &operator=(const CoInitializeSignal &);
 public:
 	~CoInitializeSignal(){
 		CoUninitialize();
