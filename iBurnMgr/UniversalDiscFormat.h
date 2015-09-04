@@ -24,9 +24,10 @@
 NAMESPACEMETRO
 UNNAMESPACE
 
+typedef HRESULT(*DecodeRate)(float, void *data);
+
 class UniversalDiscFormatDecode{
 private:
-	//IDiscRecorder2Ex
 	IDiscFormat2Data* m_pIDiscFormat2Data;
 	std::wstring m_Image;
 	std::wstring m_drive;
@@ -38,6 +39,7 @@ public:
 	};
 	UniversalDiscFormatDecode(std::wstring image,std::wstring drive);
 	~UniversalDiscFormatDecode();
+	HRESULT Decode(DecodeRate rate,void *data);
 };
 
 

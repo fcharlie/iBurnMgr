@@ -35,8 +35,8 @@ WCHAR SizeStr[120] = { '0',' ','B','y','t','e','s','\0'};//Background
 std::wstring Notes;
 static Decompress::SupervisorData SpData = {L"null",L"A:",0};
 static ResolveSupervisor::ResolveData reData = { L"null", NULL };
-const UINT METRO_MULTITHREAD_MSG = RegisterWindowMessage(L"METRO_MULTITHREAD_MSG");
-const UINT METRO_THREAD_RATESTATUS_MSG = RegisterWindowMessage(L"METRO_THREAD_RATESTATUS_MSG");
+const UINT METRO_MULTITHREAD_MSG = RegisterWindowMessageW(L"METRO_MULTITHREAD_MSG");
+const UINT METRO_THREAD_RATESTATUS_MSG = RegisterWindowMessageW(L"METRO_THREAD_RATESTATUS_MSG");
 static std::wstring envinfo=L"No Check Environment";
 
 static Metro::PidKillHlp pidkill = { 0, false };

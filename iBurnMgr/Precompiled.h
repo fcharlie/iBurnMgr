@@ -25,4 +25,4 @@ extern CAppModule _Module;
 #include <atlctrls.h>
 
 
-typedef bool(*FormatCallback)(const wchar_t *,void *);
+

@@ -9,16 +9,15 @@
 #define  DECOMPRESSSUPERVISION
 #include <string>
 
-//////////////////////////
-/// 1 Format Flash Disk
-/// 2 7Z Decompress ISO Image
-/// 3 Check End Return Success
 
-
+typedef bool(*FormatFailedCallback)(const wchar_t *, void *);
+/*
+* Use IVdsVolumeFormat::FormatEx2
+*/
 BOOL WINAPI  IVdsVolumeFormat(
 	LPCWSTR    latter,
 	LPWSTR    pwszLabel,
-	FormatCallback fcall,
+	FormatFailedCallback fcall,
 	void *data);
 
 namespace Decompress{

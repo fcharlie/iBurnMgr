@@ -11,25 +11,40 @@
 #include "ResolveBootSupervisor.h"
 
 
-static ResolveSupervisor::ResolveData radate = { L"0", 0 };
-static Decompress::SupervisorData *SpData = NULL;
+static ResolveSupervisor::ResolveData radate = { {0}, 0 };
+static Decompress::SupervisorData *SpData = nullptr;
 WCHAR deslog[200] = { 0 };
 float decst = 0;
 UINT drate = 0;
 DWORD dwThreadId = 0;
-//bool FormatDriver(WCHAR *szDriver);
 
-static bool FormatCallbackInc(const wchar_t *msg, void *data){
+
+static bool FormatFailedCallbackInc(const wchar_t *msg, void *data){
 	if (!data||!msg) return false;
-	HWND hWnd = static_cast<HWND>(data);
-	SendMessageW(hWnd, Metro::METRO_MULTITHREAD_MSG, MET_DECOMPRESS, (LPARAM)msg);
+	HWND hWnd = reinterpret_cast<HWND>(data);
+	int nButton;
+	///SendMessageW(hWnd, Metro::METRO_MULTITHREAD_MSG, MET_DECOMPRESS, (LPARAM)msg);
+	TaskDialog(hWnd, nullptr, L"Format Report", L"Message:", msg, TDCBF_YES_BUTTON | TDCBF_NO_BUTTON,
+		TD_ERROR_ICON, &nButton);
 	return true;
 }
+
+/* 7Zip 
+UInt32 WINAPI CreateObject(const GUID *clsID, const GUID *interfaceID, void **outObject);
+UInt32 WINAPI GetNumberOfMethods(UInt32 *numMethods);
+UInt32 WINAPI GetMethodProperty(UInt32 index, PROPID propID, PROPVARIANT *value);
+UInt32 WINAPI GetNumberOfFormats(UInt32 *numFormats);
+UInt32 WINAPI GetHandlerProperty(PROPID propID, PROPVARIANT *value);
+UInt32 WINAPI GetHandlerProperty2(UInt32 index, PROPID propID, PROPVARIANT *value);
+UInt32 WINAPI SetLargePageMode();
+*/
+
 
 
 namespace Decompress{
 	DWORD WINAPI DecompressDetectRate(LPVOID lParam)
 	{
+		if (SpData == nullptr) return 1;
 		//SupervisorData* SpData = static_cast<SupervisorData*>(lParam);
 		DWORD exitcode;
 		HWND hWnd = static_cast<HWND>(SpData->lParam);
@@ -44,8 +59,8 @@ namespace Decompress{
 			//PostMessage(hWnd, Metro::METRO_THREAD_RATESTATUS_MSG, METRO_RATE_ADNORMAL, 0);
 			exitcode = 1;
 		}
-		PostMessage(hWnd, Metro::METRO_MULTITHREAD_MSG, MET_DECOMPRESS, (LPARAM)deslog);
-		PostMessage(hWnd, Metro::METRO_THREAD_RATESTATUS_MSG, METRO_RATE_ENDOK, 0);
+		PostMessageW(hWnd, Metro::METRO_MULTITHREAD_MSG, MET_DECOMPRESS, (LPARAM)deslog);
+		PostMessageW(hWnd, Metro::METRO_THREAD_RATESTATUS_MSG, METRO_RATE_ENDOK, 0);
 		return 0;
 	}
 	DWORD WINAPI DecompressSupervisorThread(LPVOID Spdata)
@@ -115,7 +130,7 @@ namespace Decompress{
 	{
 		wcscpy_s(deslog, L"The First Step: Format USB device ");
 		wcscat_s(deslog, m_latter.c_str());
-		PostMessage(hParents, Metro::METRO_MULTITHREAD_MSG, MET_DECOMPRESS, LPARAM(deslog));
+		PostMessageW(hParents, Metro::METRO_MULTITHREAD_MSG, MET_DECOMPRESS, LPARAM(deslog));
 		int nButton;
 		TaskDialog(hParents, NULL, 
 			L"Will be formatted USB device", L"Format Warning!", 
@@ -125,69 +140,25 @@ namespace Decompress{
 
 		if (nButton != IDYES)
 		{
-			PostMessage(hParents, Metro::METRO_THREAD_RATESTATUS_MSG, METRO_CANCLE_OPT, METRO_CANCLE_OPT_FORMAT);
+			PostMessageW(hParents, Metro::METRO_THREAD_RATESTATUS_MSG, METRO_CANCLE_OPT, METRO_CANCLE_OPT_FORMAT);
 			Sleep(1500);
 			return false;
 		}
-		if (IVdsVolumeFormat(this->m_latter.c_str(),L"Installer",FormatCallbackInc,this->hParents)==TRUE)
+		if (IVdsVolumeFormat(this->m_latter.c_str(),L"Installer",FormatFailedCallbackInc,this->hParents)==TRUE)
 		{
-			PostMessage(hParents, Metro::METRO_THREAD_RATESTATUS_MSG, METRO_RATE_FORMAT, METRO_RATE_FORMAT_SUC);
+			PostMessageW(hParents, Metro::METRO_THREAD_RATESTATUS_MSG, METRO_RATE_FORMAT, METRO_RATE_FORMAT_SUC);
 		}
 		else{
-			PostMessage(hParents, Metro::METRO_THREAD_RATESTATUS_MSG, METRO_RATE_FORMAT, METRO_RATE_FORMAT_ERR);			
+			PostMessageW(hParents, Metro::METRO_THREAD_RATESTATUS_MSG, METRO_RATE_FORMAT, METRO_RATE_FORMAT_ERR);			
 			return false;
 		}
-		
 		return true;
 	}
-	//bool Supervisor::FormatUSBDevice()
-	//{
-
-	//	WCHAR FormatCmd[260] = { 0 };
-	//	if(!SUCCEEDED(SHGetFolderPath(NULL, 
- //                            CSIDL_WINDOWS|CSIDL_FLAG_NO_ALIAS, 
- //                            NULL, 
- //                            0, 
- //                            FormatCmd))) 
- //        {
-	//		 //Not Found format.com
-	//		 return false;
-	//	 }
-	//	wcscat_s(FormatCmd, L"\\System32\\format.com ");
-	//	wcscat_s(FormatCmd, m_latter.c_str());
-	//	wcscat_s(FormatCmd, L" /y /FS:NTFS /v:WinInstall /q /x /A:4096");
-	//	PROCESS_INFORMATION pi;
-	//	STARTUPINFO sInfo;
-	//	DWORD dwExitCode;
-	//	ZeroMemory(&sInfo, sizeof(sInfo));
-	//	sInfo.cb = sizeof(sInfo);
-	//	sInfo.dwFlags = STARTF_USESHOWWINDOW;
-	//	sInfo.wShowWindow = SW_HIDE;
-	//	ZeroMemory(&pi, sizeof(pi));
-	//	DWORD result = CreateProcess(NULL, FormatCmd, NULL, NULL, NULL, CREATE_NO_WINDOW, NULL, NULL, &sInfo, &pi);
-	//	DWORD x = GetLastError();
-	//	if (result == TRUE)
-	//	{
-	//		CloseHandle(pi.hThread);
-	//		if(WAIT_TIMEOUT==WaitForSingleObject(pi.hProcess, INFINITE))
-	//		{
-	//			TerminateProcess(pi.hProcess, 11);
-	//		}
-	//		GetExitCodeProcess(pi.hProcess, &dwExitCode);
-	//		CloseHandle(pi.hProcess);
-	//		if (dwExitCode != 0)
-	//		{
-	//			return false;
-	//		}
-	//		return true;
-	//	};
-	//	return false;
-	//}
 	bool WINAPI Supervisor::CreateDecompressInvoke(HWND hWnd,std::wstring img, LPWSTR latter)
 	{
-		WCHAR _7zCmd[MAX_UNC_PATH] = { 0 };
+		WCHAR _7zCmd[MAX_PATH] = { 0 };
 		//HWND m_hWnd = static_cast<HWND>(hWnd);
-		GetModuleFileName(GetModuleHandle(nullptr), _7zCmd, MAX_UNC_PATH);
+		GetModuleFileNameW(GetModuleHandle(nullptr), _7zCmd, MAX_UNC_PATH);
 		(wcsrchr(_7zCmd, _T('\\')))[0] = 0;
 		(wcsrchr(_7zCmd, _T('\\')))[0] = 0;
 		wcscat_s(_7zCmd, L"\\7-zip\\7z.exe");
@@ -210,13 +181,13 @@ namespace Decompress{
 		sInfo.wShowWindow = SW_HIDE;
 		ZeroMemory(&pi, sizeof(pi));
 
-		DWORD result = CreateProcess(NULL, _7zCmd, NULL, NULL, NULL, CREATE_NO_WINDOW, NULL, NULL, &sInfo, &pi);
+		DWORD result = CreateProcessW(NULL, _7zCmd, NULL, NULL, NULL, CREATE_NO_WINDOW, NULL, NULL, &sInfo, &pi);
 		if (result == TRUE)
 		{
 			CloseHandle(pi.hThread);
-			PostMessage(hWnd, Metro::METRO_MULTITHREAD_MSG, MET_POST_PID_ADD, pi.dwProcessId);
+			PostMessageW(hWnd, Metro::METRO_MULTITHREAD_MSG, MET_POST_PID_ADD, pi.dwProcessId);
 			WaitForSingleObject(pi.hProcess, INFINITE);
-			PostMessage(hWnd, Metro::METRO_MULTITHREAD_MSG, MET_POST_PID_CLEAR, 0);
+			PostMessageW(hWnd, Metro::METRO_MULTITHREAD_MSG, MET_POST_PID_CLEAR, 0);
 			GetExitCodeProcess(pi.hProcess, &dwExitCode);
 			CloseHandle(pi.hProcess);
 			if (dwExitCode != 0 &&dwExitCode!=1)

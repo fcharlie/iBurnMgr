@@ -27,7 +27,9 @@ Interface **ppInterfaceToRelease
 NAMESPACEMETRO
 UNNAMESPACE
 
-UniversalDiscFormatDecode::UniversalDiscFormatDecode(std::wstring image, std::wstring drive) :m_Image(image), m_drive(drive),
+UniversalDiscFormatDecode::UniversalDiscFormatDecode(std::wstring image, std::wstring drive)
+:m_Image(image), 
+m_drive(drive),
 m_pIDiscFormat2Data(NULL)
 {
 
