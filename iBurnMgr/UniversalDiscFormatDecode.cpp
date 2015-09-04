@@ -27,7 +27,7 @@ Interface **ppInterfaceToRelease
 NAMESPACEMETRO
 UNNAMESPACE
 
-UniversalDiscFormatDecode::UniversalDiscFormatDecode(std::wstring image, std::wstring drive)
+UniversalDiscFormatDecode::UniversalDiscFormatDecode(std::wstring &image, std::wstring &drive)
 :m_Image(image), 
 m_drive(drive),
 m_pIDiscFormat2Data(NULL)
@@ -38,6 +38,13 @@ m_pIDiscFormat2Data(NULL)
 UniversalDiscFormatDecode::~UniversalDiscFormatDecode()
 {
 	SafeRelease(&m_pIDiscFormat2Data);
+}
+
+
+HRESULT UniversalDiscFormatDecode::Decode(DecodeRate rate, void *data)
+{
+	
+	return S_OK;
 }
 
 ///Namespace End

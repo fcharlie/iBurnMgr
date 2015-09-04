@@ -21,6 +21,9 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance,
 {
 	UNREFERENCED_PARAMETER(hPrevInstance);
 	UNREFERENCED_PARAMETER(lpCmdLine);
+	if (!CoInitializeSignal::Initialize()){
+
+	}
 	HeapSetInformation(NULL, HeapEnableTerminationOnCorruption, NULL, 0);
 	Metro::MUI::muiController.Init();
 	_Module.Init(nullptr, hInstance);
@@ -43,7 +46,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance,
 		DispatchMessage(&msg);
 	}
 	dwExit = iMetroWindow.GetExitCode();
-	::CoUninitialize();
 	_Module.Term();
 	return dwExit;
 }

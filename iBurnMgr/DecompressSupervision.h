@@ -9,8 +9,9 @@
 #define  DECOMPRESSSUPERVISION
 #include <string>
 
-
-typedef bool(*FormatFailedCallback)(const wchar_t *, void *);
+#define SUCCESS_REPORT true
+#define ERROR_MESSAGE false
+typedef bool(*FormatFailedCallback)(const wchar_t *,bool status, void *);
 /*
 * Use IVdsVolumeFormat::FormatEx2
 */

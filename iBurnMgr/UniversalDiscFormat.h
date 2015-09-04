@@ -37,7 +37,7 @@ public:
 		DiscJoliet=2,
 		DiscUDF=3
 	};
-	UniversalDiscFormatDecode(std::wstring image,std::wstring drive);
+	UniversalDiscFormatDecode(std::wstring &image,std::wstring &drive);
 	~UniversalDiscFormatDecode();
 	HRESULT Decode(DecodeRate rate,void *data);
 };

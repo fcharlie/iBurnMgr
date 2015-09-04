@@ -183,18 +183,9 @@ BOOL WINAPI  IVdsVolumeFormat(
 	HRESULT hr, AsyncHr;
 	IVdsAsync      *pAsync = NULL;
 	VDS_ASYNC_OUTPUT AsyncOut;
-
-	hr = CoInitializeSecurity(
-		NULL,
-		-1,
-		NULL,
-		NULL,
-		RPC_C_AUTHN_LEVEL_CONNECT,
-		RPC_C_IMP_LEVEL_IMPERSONATE,
-		NULL,
-		0,
-		NULL
-		);
+	if (CoInitializeSignal::Initialize()==nullptr){
+		return false;
+	}
 	IVdsServiceLoader *pLoader;
 	IUnknown *pUnk;
 	ULONG ulFetched = 0;
@@ -211,7 +202,7 @@ BOOL WINAPI  IVdsVolumeFormat(
 	pLoader = NULL;
 	if (hr != S_OK){
 		if (fcall){
-			fcall(ErrorCodesMessage(hr), data);
+			fcall(ErrorCodesMessage(hr),false,data);
 		}
 		return FALSE;
 	}
@@ -237,24 +228,23 @@ BOOL WINAPI  IVdsVolumeFormat(
 	hr = pAsync->Wait(&AsyncHr, &AsyncOut);
 	if (FAILED(hr)){
 		if (fcall){
-			fcall(ErrorCodesMessage(hr), data);
+			fcall(ErrorCodesMessage(hr),false,data);
 		}
 	}
 	else if (FAILED(AsyncHr)){
 		if (fcall){
-			fcall(ErrorCodesMessage(hr), data);
+			fcall(ErrorCodesMessage(hr),false,data);
 		}
 	}
 	else{
 		if (fcall){
-			fcall(L"Format volume Success done. ", data);
+			fcall(L"Format volume Success done. ", true,data);
 		}
 	}
 	SAFE_RELEASE(pVolume);
 	SAFE_RELEASE(pVolumeMF3);
 _bailout:
 	SAFE_RELEASE(pService);
-	CoUninitialize();
 	return hr==S_OK;
 }
 

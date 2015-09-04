@@ -13,6 +13,7 @@
 
 #include <atlbase.h>
 #include <atlapp.h>
+#include <assert.h>
 
 #ifndef MAX_UNC_PATH
 #define MAX_UNC_PATH  (32*1024-1)
@@ -24,5 +25,29 @@ extern CAppModule _Module;
 #include <atlctl.h>
 #include <atlctrls.h>
 
-
+class CoInitializeSignal{
+private:
+	CoInitializeSignal(){
+		auto hr=CoInitializeSecurity(
+			NULL,
+			-1,
+			NULL,
+			NULL,
+			RPC_C_AUTHN_LEVEL_CONNECT,
+			RPC_C_IMP_LEVEL_IMPERSONATE,
+			NULL,
+			0,
+			NULL
+			);
+		assert(hr);
+	}
+public:
+	~CoInitializeSignal(){
+		CoUninitialize();
+	}
+	static CoInitializeSignal *Initialize(){
+		static CoInitializeSignal in;
+		return &in;
+	}
+};
 

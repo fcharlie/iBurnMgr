@@ -19,13 +19,19 @@ UINT drate = 0;
 DWORD dwThreadId = 0;
 
 
-static bool FormatFailedCallbackInc(const wchar_t *msg, void *data){
+static bool FormatFailedCallbackInc(const wchar_t *msg,bool status,void *data){
 	if (!data||!msg) return false;
 	HWND hWnd = reinterpret_cast<HWND>(data);
 	int nButton;
 	///SendMessageW(hWnd, Metro::METRO_MULTITHREAD_MSG, MET_DECOMPRESS, (LPARAM)msg);
-	TaskDialog(hWnd, nullptr, L"Format Report", L"Message:", msg, TDCBF_YES_BUTTON | TDCBF_NO_BUTTON,
-		TD_ERROR_ICON, &nButton);
+	if (status){
+		TaskDialog(hWnd, nullptr, L"Format Notice", L"Message:", msg, TDCBF_YES_BUTTON | TDCBF_NO_BUTTON,
+			TD_INFORMATION_ICON, &nButton);
+	}
+	else{
+		TaskDialog(hWnd, nullptr, L"Format Error", L"Message:", msg, TDCBF_YES_BUTTON | TDCBF_NO_BUTTON,
+			TD_ERROR_ICON, &nButton);
+	}
 	return true;
 }
 
