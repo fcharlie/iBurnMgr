@@ -33,11 +33,11 @@ UINT Argc = ARRAYSIZE(FileArg);
 //DialogInfo dlf={L"´ò¿ªÔ´ÎÄ¼þ",L"cpp"};
 void ReportErrorEx(LPCWSTR pszFunction, HRESULT hr)
 {
-	wchar_t szMessage[200];
-	if (SUCCEEDED(StringCchPrintf(szMessage, ARRAYSIZE(szMessage),
+	wchar_t szMessage[64];
+	if (SUCCEEDED(StringCchPrintfW(szMessage, ARRAYSIZE(szMessage),
 		L"%s failed w/hr 0x%08lx", pszFunction, hr)))
 	{
-		MessageBox(NULL, szMessage, L"Error", MB_ICONERROR);
+		MessageBoxW(NULL, szMessage, L"Error", MB_ICONERROR);
 	}
 }
 

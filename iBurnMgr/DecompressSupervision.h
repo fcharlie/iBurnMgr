@@ -24,7 +24,7 @@ BOOL WINAPI  IVdsVolumeFormat(
 namespace Decompress{
 	typedef struct _SupervisorData{
 		std::wstring image;
-		wchar_t latter[9];
+		wchar_t latter[4];
 		LPVOID lParam;
 	}SupervisorData,*LPSupervisorData;
 

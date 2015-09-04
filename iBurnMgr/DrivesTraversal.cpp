@@ -16,8 +16,8 @@ UINT WINAPI  DiscoverRemoveableDrives(ULONGLONG limitSize)
 {
 	UINT index = 0;
 	wchar_t buffer[2048] = { 0 };
-	wchar_t drivePath[9] = { 0 };
-	wchar_t driveLetter[5] = { 0 };
+	wchar_t drivePath[8] = { 0 };
+	wchar_t driveLetter[4] = { 0 };
 	DWORD iSub = 0;
 	DWORD iLength= GetLogicalDriveStringsW(2048, buffer);
 	for (iSub = 0; iSub < iLength; iSub += 4)

@@ -14,7 +14,7 @@
 #include <fstream>
 
 NAMESPACEMETRO
-MUI::LocaleInfo localeinfo = {L"0",0};
+MUI::LocaleInfo localeinfo = { {0}, 0 };
 namespace MUI{
 	MUIController muiController;
 	static LocnameBase localbase[] = {

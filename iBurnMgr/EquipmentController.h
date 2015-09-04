@@ -11,7 +11,7 @@
 typedef struct _RemoveableDrive{
 	wchar_t driveLetter[4];
 	wchar_t drivePath[8];
-	wchar_t sizeInfo[160];
+	wchar_t sizeInfo[64];
 }RemoveableDrive;
 
 UINT WINAPI  DiscoverRemoveableDrives(ULONGLONG limitSize = 0);
