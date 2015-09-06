@@ -41,8 +41,6 @@ private:
 			);
 		assert(hr);
 	}
-	CoInitializeSignal(CoInitializeSignal &);
-	CoInitializeSignal &operator=(const CoInitializeSignal &);
 public:
 	~CoInitializeSignal(){
 		CoUninitialize();
@@ -51,5 +49,7 @@ public:
 		static CoInitializeSignal in;
 		return &in;
 	}
+	CoInitializeSignal(const CoInitializeSignal &)=delete;
+	CoInitializeSignal &operator=(const CoInitializeSignal &)=delete;
 };
 
