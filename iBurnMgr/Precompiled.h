@@ -25,9 +25,9 @@ extern CAppModule _Module;
 #include <atlctl.h>
 #include <atlctrls.h>
 
-class CoInitializeSignal{
+class CoInitializeSingle{
 private:
-	CoInitializeSignal(){
+	CoInitializeSingle(){
 		auto hr=CoInitializeSecurity(
 			NULL,
 			-1,
@@ -42,14 +42,14 @@ private:
 		assert(hr);
 	}
 public:
-	~CoInitializeSignal(){
+	~CoInitializeSingle(){
 		CoUninitialize();
 	}
-	static CoInitializeSignal *Initialize(){
-		static CoInitializeSignal in;
+	static CoInitializeSingle *Initialize(){
+		static CoInitializeSingle in;
 		return &in;
 	}
-	CoInitializeSignal(const CoInitializeSignal &)=delete;
-	CoInitializeSignal &operator=(const CoInitializeSignal &)=delete;
+	CoInitializeSingle(const CoInitializeSingle &)=delete;
+	CoInitializeSingle &operator=(const CoInitializeSingle &)=delete;
 };
 

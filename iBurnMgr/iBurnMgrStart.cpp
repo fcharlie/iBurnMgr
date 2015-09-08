@@ -21,7 +21,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance,
 {
 	UNREFERENCED_PARAMETER(hPrevInstance);
 	UNREFERENCED_PARAMETER(lpCmdLine);
-	if (!CoInitializeSignal::Initialize()){
+	if (!CoInitializeSingle::Initialize()){
 
 	}
 	HeapSetInformation(NULL, HeapEnableTerminationOnCorruption, NULL, 0);

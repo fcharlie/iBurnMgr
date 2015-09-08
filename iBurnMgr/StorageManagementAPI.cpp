@@ -183,7 +183,7 @@ BOOL WINAPI  IVdsVolumeFormat(
 	HRESULT hr, AsyncHr;
 	IVdsAsync      *pAsync = NULL;
 	VDS_ASYNC_OUTPUT AsyncOut;
-	if (CoInitializeSignal::Initialize()==nullptr){
+	if (CoInitializeSingle::Initialize()==nullptr){
 		return false;
 	}
 	IVdsServiceLoader *pLoader;
