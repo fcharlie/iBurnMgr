@@ -16,14 +16,14 @@
     <!-- HEADER -->
     <div id="header_wrap" class="outer">
         <header class="inner">
-          <a id="forkme_banner" href="https://github.com/forcegroup/iBurnMgr">View on GitHub</a>
+          <a id="forkme_banner" href="https://github.com/fcharlie/iBurnMgr">View on GitHub</a>
 
           <h1 id="project_title">iBurnManager a USB Boot Creat tools</h1>
           <h2 id="project_tagline">Metro USB Drives Burn Boot Manager</h2>
 
             <section id="downloads">
-              <a class="zip_download_link" href="https://github.com/forcegroup/iBurnMgr/zipball/master">Download this project as a .zip file</a>
-              <a class="tar_download_link" href="https://github.com/forcegroup/iBurnMgr/tarball/master">Download this project as a tar.gz file</a>
+              <a class="zip_download_link" href="https://github.com/fcharlie/iBurnMgr/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/fcharlie/iBurnMgr/tarball/master">Download this project as a tar.gz file</a>
             </section>
         </header>
     </div>
@@ -35,17 +35,124 @@
 <a id="usb-device-boot-burn-manager-" class="anchor" href="#usb-device-boot-burn-manager-" aria-hidden="true"><span class="octicon octicon-link"></span></a>USB Device Boot Burn Manager <a href="https://github.com/forcegroup/iBurnMgr"><img src="https://travis-ci.org/pocoproject/poco.png?branch=develop" alt="Build Status"></a>
 </h1>
 
-<p>iBurnMgr is a 'Metro Style' USB Drives Burn Boot Manager.</p>
-
-<p>iBurnMgr is developed using C + +, runs on Windows, a production Windows 7+ USB installation disk tools</p>
-
-<p>iBurnMgr used WTL framework, using Direct2D rendering Push Button, close and minimize buttons, and backgrounds, functional areas. Text is output using DirectWrite,MessageBox is TaskDialog replaced.</p>
-
-<p>Format the USB flash drive comes format.com tools rely on Windows, unzip the ISO image using 7z, repair USB flash drive using the Windows ADK's bootsect.exe</p>
-
-<p>In the second edition or third edition, iBurnMgr will eliminate reliance on third-party tools.</p>
+<p>iBurnMgr is a 'Modern Style' USB Drives Burn Boot Manager.<br>
+iBurnMgr is developed using C + +, runs on Windows, a production Windows 10 USB installation disk tools<br>
+iBurnMgr used WTL framework, using Direct2D rendering Push Button, close and minimize buttons, and backgrounds, 
+functional areas. Text is output using DirectWrite,MessageBox is TaskDialog replaced.<br>
+Format the USB flash drive comes format.com tools rely on Windows, unzip the ISO image using 7z, 
+repair USB flash drive using the Windows ADK's bootsect.exe<br>
+In the second edition or third edition, iBurnMgr will eliminate reliance on third-party tools.    </p>
 
 <p>iBurnMgr now Support Multilanguage.</p>
+
+<h3>
+<a id="internal" class="anchor" href="#internal" aria-hidden="true"><span class="octicon octicon-link"></span></a>Internal</h3>
+
+<ol>
+<li>Format:</li>
+</ol>
+
+<div class="highlight highlight-source-c"><pre>BOOL WINAPI  <span class="pl-en">IVdsVolumeFormat</span>(
+    LPCWSTR    latter,
+    LPWSTR    pwszLabel,
+    FormatFailedCallback fcall,
+    <span class="pl-k">void</span> *data)
+{
+    <span class="pl-k">if</span> (!<span class="pl-c1">VAILED_LATTER</span>(latter[<span class="pl-c1">0</span>]) || latter[<span class="pl-c1">1</span>] != <span class="pl-s"><span class="pl-pds">'</span>:<span class="pl-pds">'</span></span>) <span class="pl-k">return</span> <span class="pl-c1">FALSE</span>;
+    HRESULT hr, AsyncHr;
+    IVdsAsync      *pAsync = <span class="pl-c1">NULL</span>;
+    VDS_ASYNC_OUTPUT AsyncOut;
+
+    hr = <span class="pl-c1">CoInitializeSecurity</span>(
+        <span class="pl-c1">NULL</span>,
+        -<span class="pl-c1">1</span>,
+        <span class="pl-c1">NULL</span>,
+        <span class="pl-c1">NULL</span>,
+        RPC_C_AUTHN_LEVEL_CONNECT,
+        RPC_C_IMP_LEVEL_IMPERSONATE,
+        <span class="pl-c1">NULL</span>,
+        <span class="pl-c1">0</span>,
+        <span class="pl-c1">NULL</span>
+        );
+    IVdsServiceLoader *pLoader;
+    IUnknown *pUnk;
+    ULONG ulFetched = <span class="pl-c1">0</span>;
+    hr = <span class="pl-c1">CoCreateInstance</span>(CLSID_VdsLoader,
+        <span class="pl-c1">NULL</span>,
+        CLSCTX_LOCAL_SERVER | CLSCTX_REMOTE_SERVER,
+        IID_IVdsServiceLoader,
+        (<span class="pl-k">void</span> **)&amp;pLoader
+        );
+    <span class="pl-k">if</span> (hr != S_OK) <span class="pl-k">return</span> <span class="pl-c1">false</span>;
+    IVdsService *pService;
+    hr = pLoader-&gt;<span class="pl-c1">LoadService</span>(<span class="pl-c1">NULL</span>, &amp;pService);
+    pLoader-&gt;<span class="pl-c1">Release</span>();
+    pLoader = <span class="pl-c1">NULL</span>;
+    <span class="pl-k">if</span> (hr != S_OK){
+        <span class="pl-k">if</span> (fcall){
+            <span class="pl-c1">fcall</span>(<span class="pl-c1">ErrorCodesMessage</span>(hr), data);
+        }
+        <span class="pl-k">return</span> <span class="pl-c1">FALSE</span>;
+    }
+    VDS_DRIVE_LETTER_PROP mDriveLetterPropArray[<span class="pl-c1">1</span>];
+    hr = pService-&gt;<span class="pl-c1">QueryDriveLetters</span>(latter[<span class="pl-c1">0</span>], <span class="pl-c1">1</span>, mDriveLetterPropArray);
+    <span class="pl-k">if</span> (hr != S_OK){
+        <span class="pl-k">goto</span> _bailout;
+    }
+    hr = pService-&gt;<span class="pl-c1">GetObjectW</span>(mDriveLetterPropArray-&gt;volumeId, VDS_OT_VOLUME, &amp;pUnk);
+    <span class="pl-k">if</span> (hr != S_OK){
+        <span class="pl-k">goto</span> _bailout;
+    }
+    IVdsVolume *pVolume;
+    hr = pUnk-&gt;<span class="pl-c1">QueryInterface</span>(IID_IVdsVolume, (<span class="pl-k">void</span> **)&amp;pVolume);
+    <span class="pl-k">if</span> (hr != S_OK){
+        <span class="pl-c1">SAFE_RELEASE</span>(pUnk);
+        <span class="pl-k">goto</span> _bailout;
+    }
+    IVdsVolumeMF3 *pVolumeMF3;
+    hr = pVolume-&gt;<span class="pl-c1">QueryInterface</span>(IID_IVdsVolumeMF3, (<span class="pl-k">void</span> **)&amp;pVolumeMF3);
+
+    hr = pVolumeMF3-&gt;<span class="pl-c1">FormatEx2</span>(L<span class="pl-s"><span class="pl-pds">"</span>NTFS<span class="pl-pds">"</span></span>, <span class="pl-c1">1</span>, <span class="pl-c1">0</span>, pwszLabel, VDS_FSOF_QUICK, &amp;pAsync);
+    hr = pAsync-&gt;<span class="pl-c1">Wait</span>(&amp;AsyncHr, &amp;AsyncOut);
+    <span class="pl-k">if</span> (<span class="pl-c1">FAILED</span>(hr)){
+        <span class="pl-k">if</span> (fcall){
+            <span class="pl-c1">fcall</span>(<span class="pl-c1">ErrorCodesMessage</span>(hr), data);
+        }
+    }
+    <span class="pl-k">else</span> <span class="pl-k">if</span> (<span class="pl-c1">FAILED</span>(AsyncHr)){
+        <span class="pl-k">if</span> (fcall){
+            <span class="pl-c1">fcall</span>(<span class="pl-c1">ErrorCodesMessage</span>(hr), data);
+        }
+    }
+    <span class="pl-k">else</span>{
+        <span class="pl-k">if</span> (fcall){
+            <span class="pl-c1">fcall</span>(L<span class="pl-s"><span class="pl-pds">"</span>Format volume Success done. <span class="pl-pds">"</span></span>, data);
+        }
+    }
+    <span class="pl-c1">SAFE_RELEASE</span>(pVolume);
+    <span class="pl-c1">SAFE_RELEASE</span>(pVolumeMF3);
+_bailout:
+    <span class="pl-c1">SAFE_RELEASE</span>(pService);
+    <span class="pl-c1">CoUninitialize</span>();
+    <span class="pl-k">return</span> hr==S_OK;
+}</pre></div>
+
+<ol>
+<li>
+<p>Uncompress ISO:</p>
+
+<blockquote>
+<p>7z x file.iso -aoa -y -o X:\</p>
+</blockquote>
+</li>
+<li>
+<p>Boot:</p>
+
+<blockquote>
+<p>bootsect /NT60 X:</p>
+</blockquote>
+</li>
+</ol>
 
 <h3>
 <a id="build" class="anchor" href="#build" aria-hidden="true"><span class="octicon octicon-link"></span></a>Build</h3>
@@ -67,27 +174,27 @@ or Type:</p>
 <h4>
 <a id="screenshot" class="anchor" href="#screenshot" aria-hidden="true"><span class="octicon octicon-link"></span></a>Screenshot</h4>
 
-<p><strong>Format Disk Warning</strong>
-<img src="https://raw.githubusercontent.com/forcegroup/iBurnMgr/master/ImageShow/Image.JPG" alt="WARNING"></p>
+<p>Format Disk Warning:<br>
+<img src="./ImageShow/Image.JPG" alt="WARNING"></p>
 
-<p><strong>Create BootUSB Success</strong>
-<img src="https://raw.githubusercontent.com/forcegroup/iBurnMgr/master/ImageShow/101.JPG" alt="SUCCRSS"></p>
+<p>Create BootUSB Success:<br>
+<img src="./ImageShow/101.JPG" alt="SUCCRSS"></p>
 
-<p><strong>Create Faild</strong>
-<img src="https://raw.githubusercontent.com/forcegroup/iBurnMgr/master/ImageShow/Image2.JPG" alt="FAILD"></p>
+<p>Create Faild:<br>
+<img src="./ImageShow/Image2.JPG" alt="FAILD"></p>
 
-<p><strong>NewUI</strong>
-<img src="https://raw.githubusercontent.com/forcegroup/iBurnMgr/master/ImageShow/NewUI.PNG" alt="NewUI"></p>
+<p>NewUI:<br>
+<img src="./ImageShow/NewUI.PNG" alt="NewUI"></p>
 
-<p><strong>Chinese UI</strong>
-<img src="https://raw.githubusercontent.com/forcegroup/iBurnMgr/master/ImageShow/zh-CN.PNG" alt="ChineseUI"></p>
+<p>Chinese UI:<br>
+<img src="./ImageShow/zh-CN.PNG" alt="ChineseUI"></p>
       </section>
     </div>
 
     <!-- FOOTER  -->
     <div id="footer_wrap" class="outer">
       <footer class="inner">
-        <p class="copyright">iBurnManager a USB Boot Creat tools maintained by <a href="https://github.com/forcegroup">forcegroup</a></p>
+        <p class="copyright">iBurnManager a USB Boot Creat tools maintained by <a href="https://github.com/fcharlie">fcharlie</a></p>
         <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
       </footer>
     </div>
