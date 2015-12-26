@@ -34,13 +34,13 @@ namespace Metro{
 		bool bStatus;
 		std::wstring caption;
 		_MetroPushButton(RECT rect, std::wstring itext, bool bstatus = false) :place(rect), caption(itext), bStatus(bstatus){}
-		_MetroPushButton() :place({0,0,0,0}),caption(L"Default"),bStatus(false) {}
+		_MetroPushButton() :place({0,0,0,0}),caption(L"OK"),bStatus(false) {}
 	}MetroPushButton;
 	typedef struct _MetroLabel{
 		RECT place;
 		std::wstring text;
 		_MetroLabel(RECT rect, std::wstring itext) :place(rect), text(itext){}
-		_MetroLabel() :place({0,0,0,0}), text(L"MetroLabel"){}
+		_MetroLabel() :place({0,0,0,0}), text(L"Label"){}
 	}MetroLabel;
 
 	class MetroWindow :public CWindowImpl<MetroWindow, CWindow, CMetroWindowTraits>{
@@ -63,7 +63,6 @@ namespace Metro{
 		IDWriteTextFormat* m_pITextFormatTitle;
 		IDWriteTextFormat* m_pITextFormatContent;
 		IDWriteFactory* m_pIDWriteFactory;
-		IDWriteTypography*    m_pDWriteTypography;
 		HRESULT CreateDeviceIndependentResources();
 		HRESULT Initialize();
 		HRESULT CreateDeviceResources();

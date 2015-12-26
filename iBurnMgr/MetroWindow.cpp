@@ -1,4 +1,4 @@
-﻿/*********************************************************************************************************
+/*********************************************************************************************************
 * MetroWindow.cpp
 * Note: iBurnMgr MetroWindow
 * E-mail:<forcemz@outlook.com>
@@ -253,7 +253,6 @@ m_pMetroButtonLsBrush(NULL),
 m_EdgeViewBrush(NULL),
 m_pLightWhiteBrush(NULL),
 m_pControlTextBrush(NULL),
-m_pDWriteTypography(NULL),
 m_pCloseButtonClickBrush(NULL),
 m_pWICFactory(NULL),
 m_pBitmap(NULL),
@@ -312,7 +311,6 @@ MetroWindow::~MetroWindow()
 	SafeRelease(&m_EdgeViewBrush);
 	SafeRelease(&m_pCloseButtonClickBrush);
 	SafeRelease(&m_pControlTextBrush);
-	SafeRelease(&m_pDWriteTypography);
 	SafeRelease(&m_pIDWriteFactory);
 	SafeRelease(&m_pITextFormatTitle);
 	SafeRelease(&m_pITextFormatContent);
@@ -726,7 +724,7 @@ LRESULT MetroWindow::OnSupport(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& b
 {
 	WCHAR urlStr[1024] = { 0 };
 	::LoadStringW(GetModuleHandle(nullptr), IDR_APP_URL_STRING, urlStr, 1024);
-	ShellExecute(m_hWnd, L"open",urlStr,NULL,NULL,SW_MAXIMIZE);
+	ShellExecuteW(m_hWnd, L"open",urlStr,NULL,NULL,SW_MAXIMIZE);
 	return 0;
 }
 
@@ -788,7 +786,7 @@ LRESULT MetroWindow::OnDecompress()
 	m_proge.SetPos(0);
 	WCHAR szImage[MAX_UNC_PATH] = { 0 };
 	int nButton;
-	if (::GetWindowTextLength(::GetDlgItem(m_hWnd, IDC_EDIT_IMAGE)) < 8)
+	if (::GetWindowTextLengthW(::GetDlgItem(m_hWnd, IDC_EDIT_IMAGE)) < 8)
 	{
 		TaskDialog(m_hWnd, _Module.GetModuleInstance(),
 			L"iBurnMgr Image Error", L"Image PATH Error!",
@@ -798,7 +796,7 @@ LRESULT MetroWindow::OnDecompress()
 		IsInvalid = false;
 		return 1;
 	}
-	::GetWindowText(GetDlgItem(IDC_EDIT_IMAGE), szImage, MAX_UNC_PATH);
+	::GetWindowTextW(GetDlgItem(IDC_EDIT_IMAGE), szImage, MAX_UNC_PATH);
 	errno_t err = _waccess_s(szImage, 4);
 	switch (err)
 	{
@@ -928,6 +926,20 @@ HRESULT MetroWindow::CreateDeviceIndependentResources()
 	HRESULT hr = S_OK;
 
 	hr = D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &m_pDirect2dFactory);
+	if (SUCCEEDED(hr)) {
+		DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED,
+							__uuidof(IDWriteFactory),
+							reinterpret_cast<IUnknown**>(&m_pIDWriteFactory));
+	}
+	if (SUCCEEDED(hr)) {
+		hr = CoCreateInstance(
+			CLSID_WICImagingFactory1,
+			NULL,
+			CLSCTX_INPROC_SERVER,
+			IID_IWICImagingFactory,
+			reinterpret_cast<void **>(&m_pWICFactory)
+			);
+	}
 
 	return hr;
 }
@@ -951,15 +963,7 @@ HRESULT MetroWindow::CreateDeviceResources()
 			D2D1::HwndRenderTargetProperties(m_hWnd, size),
 			&m_pRenderTarget
 			);
-		if (SUCCEEDED(hr)){
-		hr = CoCreateInstance(
-				CLSID_WICImagingFactory1,
-				NULL,
-				CLSCTX_INPROC_SERVER,
-				IID_IWICImagingFactory,
-				reinterpret_cast<void **>(&m_pWICFactory)
-				);
-		}
+
 		if (SUCCEEDED(hr))
 		{
 			hr = LoadResourceBitmap(m_pRenderTarget, m_pWICFactory,
@@ -1049,9 +1053,6 @@ HRESULT MetroWindow::OnRender()
 	
 	hr = CreateDeviceResources();
 	//IDWriteTextLayout 
-	DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED,
-		__uuidof(IDWriteFactory),
-		reinterpret_cast<IUnknown**>(&m_pIDWriteFactory));
 	m_pIDWriteFactory->CreateTextFormat(
 		normalFont.c_str(),
 		NULL,
