@@ -1,4 +1,4 @@
-USB Device Boot Burn Manager [![Build Status](https://travis-ci.org/pocoproject/poco.png?branch=develop)](https://github.com/forcegroup/iBurnMgr)
+USB Device Boot Burn Manager 
 ========
 iBurnMgr is a 'Modern Style' USB Drives Burn Boot Manager.   
 iBurnMgr is developed using C + +, runs on Windows, a production Windows 10 USB installation disk tools   
@@ -121,17 +121,17 @@ Good Luck!
 
 ####Screenshot
 Format Disk Warning:       
-![WARNING](./ImageShow/Image.JPG)
+![WARNING](./ImageShow/Image.JPG)  
 
-Create BootUSB Success:      
-![SUCCRSS](./ImageShow/101.JPG)
+Create BootUSB Success:        
+![SUCCRSS](./ImageShow/101.JPG)    
 
-Create Faild:      
-![FAILD](./ImageShow/Image2.JPG)
+Create Faild:        
+![FAILD](./ImageShow/Image2.JPG)     
 
-NewUI:     
-![NewUI](./ImageShow/NewUI.PNG)
+NewUI:       
+![NewUI](./ImageShow/NewUI.PNG)    
 
 
-Chinese UI:       
-![ChineseUI](./ImageShow/zh-CN.PNG)
+Chinese UI:        
+![ChineseUI](./ImageShow/zh-CN.PNG)    
