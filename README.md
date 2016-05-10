@@ -10,6 +10,8 @@ In the second edition or third edition, iBurnMgr will eliminate reliance on thir
 
 iBurnMgr now Support Multilanguage.
 
+iBurnMgr not enable to build Win32!
+
 ###Internal
 1. Format:
 ```c

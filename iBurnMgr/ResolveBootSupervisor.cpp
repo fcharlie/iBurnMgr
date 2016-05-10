@@ -58,10 +58,10 @@ namespace ResolveSupervisor{
 		sInfo.dwFlags = STARTF_USESHOWWINDOW;
 		sInfo.wShowWindow = SW_HIDE;
 		ZeroMemory(&pi, sizeof(pi));
-		GetModuleFileName(NULL, BCDPath, MAX_UNC_PATH);
+		GetModuleFileNameW(NULL, BCDPath, MAX_UNC_PATH);
 		(wcsrchr(BCDPath, _T('\\')))[0] = 0;
 		(wcsrchr(BCDPath, _T('\\')))[0] = 0;
-		wcscat_s(BCDPath, L"\\BCDBoot\\bootsect.exe");
+		wcscat_s(BCDPath, LR"(\utility\BCDBoot\bootsect.exe)");
 		if (!_waccess_s(BCDPath, 0) == 0)
 		{
 			return false;

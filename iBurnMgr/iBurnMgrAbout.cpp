@@ -92,7 +92,7 @@ LRESULT WINAPI CreateTaskDialogIndirectFd(
 
 	TCHAR szContent[256]; // should be long enough
 
-	wcscpy_s(szContent, L"Copyright © 2015 The ForceStudio. All Rights Reserved.");
+	wcscpy_s(szContent, L"Copyright © 2016 The ForceStudio. All Rights Reserved.");
 
 	tdConfig.pszContent = szContent;
 	WCHAR urlStr[1024] = { 0 };

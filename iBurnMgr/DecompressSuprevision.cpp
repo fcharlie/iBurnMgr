@@ -167,7 +167,7 @@ namespace Decompress{
 		GetModuleFileNameW(GetModuleHandle(nullptr), _7zCmd, MAX_UNC_PATH);
 		(wcsrchr(_7zCmd, _T('\\')))[0] = 0;
 		(wcsrchr(_7zCmd, _T('\\')))[0] = 0;
-		wcscat_s(_7zCmd, L"\\7-zip\\7z.exe");
+		wcscat_s(_7zCmd, LR"(\utility\7z\7z.exe)");
 		if (!_waccess_s(_7zCmd, 0) == 0)
 		{
 			return false;
