@@ -284,7 +284,7 @@ dwExit(0)
 	MTNotices = L"Notices Center:";
 	JobStatusRate = L"Task not start";
 	ProcessInfo = L"Manager Task Rate:";
-	copyright = L"Copyright \xA9 2015 Force Charlie.";
+	copyright = L"Copyright \xA9 2016 Force Charlie.";
 	m_mbFind.bStatus = false;
 	m_mbFind.caption =MUI::muiController.atString(L"Discover",L"Discover...");
 	m_FixBoot.bStatus = false;

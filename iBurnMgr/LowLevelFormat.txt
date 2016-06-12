@@ -1,4 +1,4 @@
-//Ó²ÅÌµÍ¼¶¸ñÊ½»¯µÄÑÐ¾¿
+ï»¿//Low level format disk driver COM interface
 #include <winioctl.h>
 #include <string.h>
 #include <ctype.h>
@@ -133,4 +133,4 @@ BOOL DismountVolume( HANDLE hDisk   )
                 NULL
                 );
 }
-///Î£ÏÕ²Ù×÷
+/// Warning
