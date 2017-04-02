@@ -122,18 +122,10 @@ Good Luck!
 
 
 ####Screenshot
-Format Disk Warning:       
-![WARNING](./ImageShow/Image.JPG)  
-
-Create BootUSB Success:        
-![SUCCRSS](./ImageShow/101.JPG)    
-
-Create Faild:        
-![FAILD](./ImageShow/Image2.JPG)     
 
 NewUI:       
-![NewUI](./ImageShow/NewUI.PNG)    
+![NewUI](./docs/images/NewUI.PNG)    
 
 
 Chinese UI:        
-![ChineseUI](./ImageShow/zh-CN.PNG)    
+![ChineseUI](./docs/images/zh-CN.PNG)    
