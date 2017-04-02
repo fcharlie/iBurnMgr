@@ -88,12 +88,12 @@
     <ClCompile Include="DecompressSuprevision.cpp" />
     <ClCompile Include="DrivesTraversal.cpp" />
     <ClCompile Include="FileManagerController.cpp" />
-    <ClCompile Include="iBurnMgrAbout.cpp" />
+    <ClCompile Include="InformationWindow.cpp" />
     <ClCompile Include="InspectionEnvironment.cpp" />
     <ClCompile Include="MetroWindow.cpp" />
     <ClCompile Include="MUIController.cpp" />
     <ClCompile Include="Precompiled.cpp" />
-    <ClCompile Include="iBurnMgrStart.cpp" />
+    <ClCompile Include="iBurnMgr.cpp" />
     <ClCompile Include="ResolveBootSupervisor.cpp" />
     <ClCompile Include="StorageManagementAPI.cpp" />
     <ClCompile Include="UniversalDiscFormatDecode.cpp" />
@@ -113,11 +113,6 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="iBurnMgr.rc" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="Image\Background.png" />
-    <Image Include="Image\EMojiFace.png" />
-    <Image Include="Image\small.ico" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="App.ini">

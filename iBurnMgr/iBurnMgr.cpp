@@ -3,7 +3,7 @@
 * Note: iBurnMgr iBurnMgrStart
 * E-mail:<forcemz@outlook.com>
 * Date: @2015.03
-* Copyright (C) 2015 The ForceStudio All Rights Reserved.
+* Copyright (C) 2017 The ForceStudio All Rights Reserved.
 **********************************************************************************************************/
 #include "Precompiled.h"
 #include "MetroWindow.h"
@@ -25,7 +25,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance,
 
 	}
 	HeapSetInformation(NULL, HeapEnableTerminationOnCorruption, NULL, 0);
-	Metro::MUI::muiController.Init();
+	Metro::MUI::mutliui.initialize();
 	_Module.Init(nullptr, hInstance);
 	MSG msg;
 	::InitCommonControls();

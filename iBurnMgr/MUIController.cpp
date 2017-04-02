@@ -3,7 +3,7 @@
 * Note: iBurnMgr MUIController
 * E-mail:<forcemz@outlook.com>
 * Date: @2015.03
-* Copyright (C) 2015 The ForceStudio All Rights Reserved.
+* Copyright (C) 2017 The ForceStudio All Rights Reserved.
 **********************************************************************************************************/
 #include "Precompiled.h"
 #include "APIController.h"
@@ -16,7 +16,7 @@
 NAMESPACEMETRO
 MUI::LocaleInfo localeinfo = { {0}, 0 };
 namespace MUI{
-	MUIController muiController;
+	MultiUI mutliui;
 	static LocnameBase localbase[] = {
 		{ "chs", 2052 },
 		{"cht", 1028},
@@ -32,11 +32,11 @@ namespace MUI{
 		return "english";
 	}
 
-	MUIController::MUIController()
+	MultiUI::MultiUI()
 	{
 
 	}
-	DWORD MUIController::Init()
+	DWORD MultiUI::initialize()
 	{
 		UILcId = GetSystemDefaultLCID();
 		WCHAR szLocal[LOCALE_NAME_MAX_LENGTH] = { 0 };
@@ -72,7 +72,7 @@ namespace MUI{
 			localeinfo.localename = L"en-US";
 		}
 		this->ifilename = langFile;
-		if (!MUIResourceLoader())
+		if (!loading())
 		{
 			return 1;
 		}
@@ -82,20 +82,20 @@ namespace MUI{
 		//}
 		return 0;
 	}
-	std::wstring MUIController::atString(std::wstring &key, std::wstring &value)
+	std::wstring MultiUI::as_string(std::wstring &key, std::wstring &value)
 	{
 		auto iter = m_langTree.find(key);
 		if (iter == m_langTree.end())
 			return value;
 		return m_langTree.at(key);
 	}
-	std::wstring MUIController::atString(const wchar_t *key, const wchar_t *value)
+	std::wstring MultiUI::as_string(const wchar_t *key, const wchar_t *value)
 	{
 		std::wstring k = key;
 		std::wstring v = value;
-		return atString(k, v);
+		return as_string(k, v);
 	}
-	bool MUIController::MUIResourceLoader()
+	bool MultiUI::loading()
 	{
 		wchar_t szBuffer[4096];
 		std::wstring newLineStr = L"\\n";

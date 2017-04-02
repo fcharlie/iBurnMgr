@@ -7,12 +7,6 @@
     <ClCompile Include="MetroWindow.cpp">
       <Filter>Sources\View</Filter>
     </ClCompile>
-    <ClCompile Include="iBurnMgrStart.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="iBurnMgrAbout.cpp">
-      <Filter>Sources\View</Filter>
-    </ClCompile>
     <ClCompile Include="InspectionEnvironment.cpp">
       <Filter>Sources\Model</Filter>
     </ClCompile>
@@ -36,6 +30,12 @@
     </ClCompile>
     <ClCompile Include="UniversalDiscFormatDecode.cpp">
       <Filter>Sources\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="InformationWindow.cpp">
+      <Filter>Sources\View</Filter>
+    </ClCompile>
+    <ClCompile Include="iBurnMgr.cpp">
+      <Filter>Sources</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -101,11 +101,6 @@
     <Filter Include="Header\Model">
       <UniqueIdentifier>{301932d6-40e2-46cc-b677-f49d99c02a2d}</UniqueIdentifier>
     </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="Image\small.ico" />
-    <Image Include="Image\EMojiFace.png" />
-    <Image Include="Image\Background.png" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="App.ini" />

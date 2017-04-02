@@ -3,7 +3,7 @@
 * Note: iBurnMgr MetroWindow
 * E-mail:<forcemz@outlook.com>
 * Date: @2015.03
-* Copyright (C) 2015 The ForceStudio All Rights Reserved.
+* Copyright (C) 2017 The ForceStudio All Rights Reserved.
 **********************************************************************************************************/
 #ifndef METROWINDOW_H
 #define METROWINDOW_H
@@ -25,7 +25,7 @@ LRESULT WINAPI CreateTaskDialogIndirectFd(
 	__out_opt int *	pnButton,
 	__out_opt int *	pnRadioButton
 	);
-extern Metro::MUI::MUIController* muiController;
+extern Metro::MUI::MultiUI* muiController;
 
 namespace Metro{
 

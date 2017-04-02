@@ -3,7 +3,7 @@
 * Note: iBurnMgr MetroWindow
 * E-mail:<forcemz@outlook.com>
 * Date: @2015.03
-* Copyright (C) 2015 The ForceStudio All Rights Reserved.
+* Copyright (C) 2017 The ForceStudio All Rights Reserved.
 **********************************************************************************************************/
 #include "Precompiled.h"
 #include "MetroWindow.h"
@@ -267,13 +267,13 @@ dwExit(0)
 {
 	if (IsUserAnAdmin())
 	{
-		windowTitle = L"Metro USB Drives Boot Manager [";
-		windowTitle += MUI::muiController.atString(L"Adm", L"Administrator") + L"]";
+		windowTitle = L"iBurnMgr [";
+		windowTitle += MUI::mutliui.as_string(L"Adm", L"Administrator") + L"]";
 	}
 	else{
-		windowTitle = L"Metro USB Drives Boot Manager";
+		windowTitle = L"iBurnMgr";
 	}
-	Notes =MUI::muiController.atString(L"NoticeInfo", DEFAULT_NOTES);
+	Notes =MUI::mutliui.as_string(L"NoticeInfo", DEFAULT_NOTES);
 	if (localeinfo.lcid == 2052)
 	{
 		FontTabel = 1;
@@ -284,20 +284,20 @@ dwExit(0)
 	MTNotices = L"Notices Center:";
 	JobStatusRate = L"Task not start";
 	ProcessInfo = L"Manager Task Rate:";
-	copyright = L"Copyright \xA9 2016 Force Charlie.";
+	copyright = L"Copyright \xA9 2017 Force Charlie.";
 	m_mbFind.bStatus = false;
-	m_mbFind.caption =MUI::muiController.atString(L"Discover",L"Discover...");
+	m_mbFind.caption =MUI::mutliui.as_string(L"Discover",L"Discover...");
 	m_FixBoot.bStatus = false;
-	m_FixBoot.caption = MUI::muiController.atString(L"Fixboot", L"Fix Boot");
+	m_FixBoot.caption = MUI::mutliui.as_string(L"Fixboot", L"Fix Boot");
 	m_Operate.bStatus = false;
 	//m_Operate.caption =muiController->m_langmap[L"BMake"];
-	m_Operate.caption = MUI::muiController.atString(L"BMake",L"Expand Image");
-	USBdrive = MUI::muiController.atString(L"USBdrive", L"USB Drives:");
-	ImageFile = MUI::muiController.atString(L"ImageFile", L"Image File:");
-	ImageSize = MUI::muiController.atString(L"ImageSize", L"Image Size:");
-	Description = MUI::muiController.atString(L"Description", L"Description:");
+	m_Operate.caption = MUI::mutliui.as_string(L"BMake",L"Expand Image");
+	USBdrive = MUI::mutliui.as_string(L"USBdrive", L"USB Drives:");
+	ImageFile = MUI::mutliui.as_string(L"ImageFile", L"Image File:");
+	ImageSize = MUI::mutliui.as_string(L"ImageSize", L"Image Size:");
+	Description = MUI::mutliui.as_string(L"Description", L"Description:");
 
-	normalFont = MUI::muiController.atString(L"NormalFont", L"Segoe UI");
+	normalFont = MUI::mutliui.as_string(L"NormalFont", L"Segoe UI");
 	
 }
 MetroWindow::~MetroWindow()
@@ -562,7 +562,7 @@ LRESULT MetroWindow::OnDropfiles(UINT nMsg, WPARAM wParam, LPARAM lParam, BOOL &
 		if (hFile != INVALID_HANDLE_VALUE)
 		{
 			GetFileSizeEx(hFile, &FileSize);
-			swprintf_s(SizeStr, L" %lld Bytes ||%4.1f KB ||%4.2f MB ||%4.2f GB\0", FileSize.QuadPart, (float)FileSize.QuadPart / 1024, (float)FileSize.QuadPart / (1024 * 1024), (float)FileSize.QuadPart / (1024 * 1024 * 1024));
+			swprintf_s(SizeStr, L" %lld Bytes ||%4.2f GB\0", FileSize.QuadPart, (float)FileSize.QuadPart / (1024 * 1024 * 1024));
 			SendMessage(WM_PAINT, 0, 0);
 		}
 		CloseHandle(hFile);
