@@ -1,7 +1,7 @@
-USB Device Boot Burn Manager 
-========
-iBurnMgr is a 'Modern Style' USB Drives Burn Boot Manager.   
-iBurnMgr is developed using C + +, runs on Windows, a production Windows 10 USB installation disk tools   
+## USB Device Boot Burn Manager 
+
+iBurnMgr is a `Modern Style` USB Drives Burn Boot Manager.   
+iBurnMgr is developed using C++, runs on Windows, a production Windows 10 USB installation disk tools   
 iBurnMgr used WTL framework, using Direct2D rendering Push Button, close and minimize buttons, and backgrounds, 
 functional areas. Text is output using DirectWrite,MessageBox is TaskDialog replaced.    
 Format the USB flash drive comes format.com tools rely on Windows, unzip the ISO image using 7z, 
@@ -12,8 +12,9 @@ iBurnMgr now Support Multilanguage.
 
 iBurnMgr not enable to build Win32!
 
-###Internal
+### Internal
 1. Format:
+
 ```c
 BOOL WINAPI  IVdsVolumeFormat(
 	LPCWSTR    latter,
@@ -102,26 +103,30 @@ _bailout:
 ```
 
 2. Uncompress ISO:
+
 >7z x file.iso -aoa -y -o X:\
 
 3. Boot:
+
 >bootsect /NT60 X:
 
 
 
-###Build
+### Build
+
 run WDExpress [VisualStudio 2012(2013) for Desktop] 
 or Type:
 > msbuild iBurnMgr.sln /t:Rebuild /p:Configuration=Release
 
-###Run
+### Run
+
 last double click iBurnMgr.exe ,or Right-to run with administrator privileges.
 
 Good Luck!
 
 
 
-####Screenshot
+#### Screenshot
 
 NewUI:       
 ![NewUI](./docs/images/NewUI.PNG)    

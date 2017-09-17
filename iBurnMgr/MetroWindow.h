@@ -9,6 +9,7 @@
 #define METROWINDOW_H
 #include <string>
 #include <d2d1.h>
+#include <d2d1_1.h>
 #include <dwrite.h>
 #include "resource.h"
 #include "APIController.h"
@@ -49,6 +50,7 @@ namespace Metro{
 		DWORD FontTabel;
 		ID2D1Factory* m_pDirect2dFactory;
 		ID2D1HwndRenderTarget* m_pRenderTarget;
+		ID2D1DeviceContext *m_d2dContext;
 		ID2D1SolidColorBrush* m_pMinButtonActiveBrush;
 		ID2D1SolidColorBrush* m_pMetroButtonNsBrush;
 		ID2D1SolidColorBrush* m_pMetroButtonLsBrush;
