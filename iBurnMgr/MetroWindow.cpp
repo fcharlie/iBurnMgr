@@ -915,9 +915,7 @@ HRESULT MetroWindow::Initialize()
 {
 	HRESULT hr;
 	hr = CreateDeviceIndependentResources();
-	FLOAT dpiX, dpiY;
-	m_pDirect2dFactory->GetDesktopDpi(&dpiX, &dpiY);
-	
+
 	return hr;
 }
 
